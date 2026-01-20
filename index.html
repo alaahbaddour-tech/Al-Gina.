@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الغنى - AL GINA Luxury Furniture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --gold: #c5a059;
+            --gold-hover: #e2c285;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --white: #ffffff;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 25px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .user-info {
+            color: var(--gold);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-info:hover {
+            color: var(--gold-hover);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin-bottom: 60px;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: var(--white);
+            letter-spacing: 3px;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            color: var(--gold);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            padding: 15px 45px;
+            background: transparent;
+            color: var(--gold);
+            border: 2px solid var(--gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            padding: 80px 0;
+            background: var(--card-bg);
+            border-radius: 4px;
+            margin-bottom: 80px;
+            text-align: center;
+            border: 1px solid rgba(197, 160, 89, 0.1);
+        }
+
+        .filter-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            color: var(--white);
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .filter-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .filter-btn {
+            padding: 12px 35px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            border-radius: 0;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: rgba(197, 160, 89, 0.05);
+        }
+
+        .sub-filters {
+            display: none;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sub-btn {
+            padding: 8px 25px;
+            border: 1px solid var(--gold);
+            background: transparent;
+            color: var(--gold);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .sub-btn.active, .sub-btn:hover {
+            background: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 40px;
+            margin-bottom: 100px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-10px);
+        }
+
+        .product-image-container {
+            height: 450px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .product-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            opacity: 0;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+
+        .product-info {
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(to top, #111, #1a1a1a);
+        }
+
+        .product-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--white);
+            letter-spacing: 1px;
+        }
+
+        .btn-inquiry {
+            display: inline-block;
+            padding: 12px 35px;
+            background: var(--gold);
+            color: var(--bg-dark);
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-inquiry:hover {
+            background: var(--gold-hover);
+            box-shadow: 0 10px 20px rgba(197, 160, 89, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: #050505;
+            color: var(--text-muted);
+            padding: 100px 0 50px;
+            text-align: center;
+            border-top: 1px solid rgba(197, 160, 89, 0.1);
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 40px;
+            color: var(--white);
+            margin-bottom: 30px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .footer-logo span { color: var(--gold); }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .social-links a {
+            color: var(--gold);
+            font-size: 24px;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--white);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 40px; }
+            .nav-links { display: none; }
+            .products-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.98); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); font-family: 'Cairo', sans-serif;">
+        <div style="background: #1a1a1a; padding: 40px; border-radius: 20px; border: 1px solid #d4af37; text-align: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); width: 320px;">
+            <h2 style="color: #d4af37; margin: 0 0 10px 0;">متجر الغنى</h2>
+            <p style="color: #ccc; margin-bottom: 25px;">يرجى إدخال اسمك للانتقال إلى تجربة تسوق فاخرة</p>
+            <input type="text" id="userNameInput" placeholder="اكتب اسمك هنا..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; background: #222; color: white; text-align: center; outline: none; font-family: 'Cairo', sans-serif;">
+            <button onclick="submitLogin()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #d4af37, #fcf6ba); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; font-family: 'Cairo', sans-serif;">دخول المتجر</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">AL <span>GINA</span></a>
+                <ul class="nav-links">
+                    <li><a href="#">الرئيسية</a></li>
+                    <li><a href="#">المجموعات</a></li>
+                    <li><a href="#">عن الشركة</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+                <div class="user-info" onclick="resetLogin()">
+                    <span id="userDisplay">مرحباً</span>
+                    <i class="fas fa-user" style="margin-right: 8px;"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>ELEGANT LIVING</h1>
+            <p>نصنع الفخامة لتناسب ذوقك الرفيع. اكتشف أرقى تصاميم المفروشات العالمية بين يديك.</p>
+            <button class="btn-primary" onclick="document.getElementById('collections').scrollIntoView()">استكشف المجموعات</button>
+        </div>
+    </section>
+
+    <div class="container" id="collections">
+        <div class="filter-section">
+            <h2>Featured Collections</h2>
+            <div class="filter-group">
+                <button class="filter-btn active" onclick="filterMain('all', this)">الكل</button>
+                <button class="filter-btn" onclick="filterMain('bedroom', this)">غرف النوم</button>
+                <button class="filter-btn" onclick="filterMain('sofas', this)">الكنبات</button>
+                <button class="filter-btn" onclick="filterMain('electronics', this)">إلكترونيات</button>
+            </div>
+
+            <div id="bedroom-subs" class="sub-filters">
+                <button class="sub-btn active" onclick="filterSub('all', this)">كل الغرف</button>
+                <button class="sub-btn" onclick="filterSub('open', this)">أبواب فتح</button>
+                <button class="sub-btn" onclick="filterSub('slide', this)">أبواب سحاب</button>
+                <button class="sub-btn" onclick="filterSub('both', this)">فتح وغلق</button>
+            </div>
+        </div>
+
+        <div class="products-grid" id="products-container">
+            <!-- Products will be loaded here -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <a href="#" class="footer-logo">AL <span>GINA</span></a>
+            <p>عنوان الفخامة والتميز في عالم المفروشات العصرية.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-pinterest-p"></i></a>
+            </div>
+            <div class="copyright">
+                &copy; 2026 AL GINA LUXURY FURNITURE. ALL RIGHTS RESERVED.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // WhatsApp Integration
+        function sendOrder(productName) {
+            const myNumber = "963945082925"; 
+            const userName = localStorage.getItem("alGinaUser") || "عميل جديد";
+            const message = `مرحباً متجر الغنى،%0aأنا العميل: *${userName}*%0aأريد طلب: *${productName}*%0aأرجو التواصل معي لتأكيد الطلب.`;
+            const whatsappURL = `https://wa.me/${myNumber}?text=${message}`;
+            window.open(whatsappURL, '_blank');
+        }
+
+        function submitLogin() {
+            const name = document.getElementById("userNameInput").value;
+            if (name.trim() !== "") {
+                localStorage.setItem("alGinaUser", name);
+                document.getElementById("loginOverlay").style.display = "none";
+                updateUserDisplay();
+            } else {
+                alert("من فضلك، أخبرنا باسمك أولاً.");
+            }
+        }
+
+        function updateUserDisplay() {
+            const userName = localStorage.getItem("alGinaUser");
+            if (userName) {
+                document.getElementById("userDisplay").textContent = `مرحباً ${userName}`;
+            }
+        }
+
+        function resetLogin() {
+            localStorage.removeItem("alGinaUser");
+            document.getElementById("loginOverlay").style.display = "flex";
+            document.getElementById("userNameInput").value = "";
+        }
+
+        // Check if user already logged in
+        window.addEventListener('load', function() {
+            const userName = localStorage.getItem("alGinaUser");
+            if (userName) {
+                document.getElementById("loginOverlay").style.display = "none";
+                updateUserDisplay();
+            }
+        });
+
+        // مصفوفة المنتجات بأسماء الصور الأصلية وصيغة jpg الصغيرة
+        const products = [
+            { id: 1, name: "غرفة كلاسيك 058", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0058.jpg" },
+            { id: 2, name: "غرفة ملكية 084", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0084.jpg" },
+            { id: 3, name: "غرفة فخامة 087", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0087.jpg" },
+            { id: 4, name: "غرفة هادئة 089", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0089.jpg" },
+            { id: 5, name: "غرفة مودرن 048", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0048.jpg" },
+            { id: 6, name: "غرفة راقية 080", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0080.jpg" },
+            { id: 7, name: "غرفة مميزة 060", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0060.jpg" },
+            { id: 8, name: "غرفة عصرية 062", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0062.jpg" },
+            { id: 9, name: "غرفة أنيقة 072", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0072.jpg" },
+            { id: 10, name: "غرفة نوم 071", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0071.jpg" },
+            { id: 11, name: "غرفة سحاب 099", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0099.jpg" },
+            { id: 12, name: "غرفة سحاب 098", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0098.jpg" },
+            { id: 13, name: "غرفة سحاب 107", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0107.jpg" },
+            { id: 14, name: "غرفة سحاب 069", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0069.jpg" },
+            { id: 15, name: "غرفة سحاب 051", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0051.jpg" },
+            { id: 16, name: "غرفة سحاب 092", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0092.jpg" },
+            { id: 17, name: "غرفة سحاب 054", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0054.jpg" },
+            { id: 18, name: "غرفة سحاب 047", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0047.jpg" },
+            { id: 19, name: "غرفة سحاب 102", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0102.jpg" },
+            { id: 20, name: "غرفة سحاب 075", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0075.jpg" },
+            { id: 21, name: "غرفة ميكس 055", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0055.jpg" },
+            { id: 22, name: "غرفة ميكس 097", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0097.jpg" },
+            { id: 23, name: "غرفة ميكس 077", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0077.jpg" },
+            { id: 24, name: "غرفة ميكس 050", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0050.jpg" },
+            { id: 25, name: "غرفة ميكس 094", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0094.jpg" },
+            { id: 26, name: "غرفة ميكس 096", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0096.jpg" },
+            { id: 27, name: "غرفة ميكس 082", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0082.jpg" },
+            { id: 28, name: "غرفة ميكس 109", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0109.jpg" },
+            { id: 29, name: "غرفة ميكس 070", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0070.jpg" },
+            { id: 30, name: "كنب مودرن 057", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0057.jpg" },
+            { id: 31, name: "كنب أنيق 088", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0088.jpg" },
+            { id: 32, name: "كنب كلاسيك 067", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0067.jpg" },
+            { id: 33, name: "كنب زاوية 059", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0059.jpg" },
+            { id: 34, name: "كنب مريح 110", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0110.jpg" },
+            { id: 35, name: "كنب 076", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0076.jpg" },
+            { id: 36, name: "كنب 095", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0095.jpg" },
+            { id: 37, name: "كنب 056", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0056.jpg" },
+            { id: 38, name: "كنب 068", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0068.jpg" },
+            { id: 39, name: "شاشة ذكية 053", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0053.jpg" },
+            { id: 40, name: "منتج تقني 064", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0064.jpg" },
+            { id: 41, name: "منتج 063", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0063.jpg" },
+            { id: 42, name: "جهاز منزلي 065", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0065.jpg" },
+            { id: 43, name: "نظام ترفيه 112", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0112.jpg" },
+            { id: 44, name: "منتج 106", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0106.jpg" },
+            { id: 45, name: "جهاز 074", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0074.jpg" },
+            { id: 46, name: "منتج 066", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0066.jpg" },
+            { id: 47, name: "جهاز 086", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0086.jpg" }
+        ];
+
+        function renderItems(items) {
+            const container = document.getElementById('products-container');
+            if (items.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 100px; color: var(--text-muted);">عذراً، لا توجد منتجات في هذا القسم حالياً.</div>';
+                return;
+            }
+            container.innerHTML = items.map(p => `
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="${p.img}" class="product-image" alt="${p.name}" onerror="this.src='https://via.placeholder.com/600x800/1a1a1a/c5a059?text=AL+GINA+LUXURY'">
+                        <div class="product-overlay">
+                            <i class="fas fa-expand-alt" style="color: var(--gold); font-size: 30px;"></i>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3>${p.name}</h3>
+                        <button class="btn-inquiry" onclick="sendOrder('${p.name}')">طلب عبر واتساب</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterMain(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const subMenu = document.getElementById('bedroom-subs');
+            subMenu.style.display = (cat === 'bedroom') ? 'flex' : 'none';
+            
+            let filtered = [];
+            if (cat === 'all') {
+                filtered = products;
+            } else if (cat === 'bedroom') {
+                filtered = products.filter(p => p.category === 'bedroom');
+            }
+            renderItems(filtered);
+        }
+
+        function filterSub(subType, btn) {
+            document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            let filtered = products.filter(p => p.category === 'bedroom');
+            if (subType !== 'all') {
+                filtered = filtered.filter(p => p.sub === subType);
+            }
+            renderItems(filtered);
+        }
+
+        window.onload = () => renderItems(products);
+    </script>
+</body>
+</html>
