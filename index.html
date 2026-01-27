@@ -8,6 +8,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <style>
+        .search-container { text-align:
+                           center;margin : 20px 0;}
+        #searchInput{
+            width :80%; padding : 12px; 
+            border : 2px;
+            solid #ddd;
+            border-radius : 25px;
+        font-size : 16px; outline : none;
+        }
+        #searchInput : focus { bordercolor : #d4a373;} 
+        
         :root {
             --primary: #1a202c;
             --secondary: #c5a059;
@@ -265,6 +276,17 @@
     </div>
 
     <header>
+        <div class= "search-container">
+            <input type="text" ,id="searchInput"
+                onkeyup = "filterProducts()"
+                placeholder="(....كنبة\سرير)ابحث عن اثاث" >
+        </div>
+        <div class = "products-section">
+         <div class = "product-card">
+             <h3>كنبة مودرن</h3> 
+             <img src="image1 .jpg">
+         </div>    
+        </div>
         <div class="container">
             <nav>
                 <a href="#" class="logo">AL <span>GINA</span></a>
@@ -321,6 +343,28 @@
     </footer>
 
     <script>
+        function filter-products() {
+            let input = document.getEl
+          ementById('searchInput') ;
+             let filter = 
+           input.value.tolwerCase();
+                     let cards = documents.getE1
+            ementById('products-card');
+                        for( let i = 0 ; i<cards.leghth; i++){
+                            let title = 
+                                cards[i].getElementsByTagName("h3")[0];
+                        if(title) { 
+                            let text = 
+                                title.textContent || title.innerText;
+                                                    if(text.towlerCase().includes(filter))
+        {
+            cards[i].style.display = "";
+        }else{ 
+            cards[i].style.display = " none";
+        }
+        }
+        }
+        }
         // WhatsApp Integration
         function sendOrder(productName) {
             const myNumber = "963945082925"; 
