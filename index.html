@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر الغنى - AL GINA Luxury Furniture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #1a202c;
+            --secondary: #c5a059;
+            --bg-light: #f7fafc;
+            --white: #ffffff;
+            --text-dark: #2d3748;
+            --sidebar-width: 280px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', Tahoma, Arial, sans-serif;
+            background-color: #f7fafc;
+            color: #2d3748;
+            line-height: 1.6;
+            direction: rtl;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* القائمة الجانبية */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+            padding: 20px 0;
+            z-index: 1000;
+            box-shadow: -3px 0 15px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            transition: right 0.3s ease;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h3 {
+            color: #c5a059;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header p {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-right: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255,255,255,0.05);
+            border-right: 3px solid #c5a059;
+            color: white;
+        }
+
+        .sidebar-menu a.active {
+            background: rgba(197, 160, 89, 0.1);
+            border-right: 3px solid #c5a059;
+            color: #c5a059;
+        }
+
+        .sidebar-menu i {
+            margin-left: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1a202c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 40px;
+            height: 40px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 1.2rem;
+            transition: right 0.3s ease;
+        }
+
+        .sidebar-toggle.visible {
+            display: flex;
+        }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            width: 100%;
+            padding: 20px;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .main-content.with-sidebar {
+            margin-right: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* Header */
+        header {
+            background: #ffffff;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 999;
+            width: 100%;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1a202c;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: #c5a059;
+        }
+
+        .user-info {
+            color: #c5a059;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-info:hover {
+            color: #1a202c;
+        }
+
+        .admin-badge {
+            background: #c5a059;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            display: none;
+        }
+
+        .admin-badge.show {
+            display: inline-block;
+        }
+
+        /* لوحة الإدارة - تصميم محسن */
+        .admin-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .admin-panel h3 {
+            color: #1a202c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c5a059;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            flex: 1 0 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #c5a059;
+            box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1);
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .btn-admin {
+            background: #1a202c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-admin:hover {
+            background: #c5a059;
+            transform: translateY(-2px);
+        }
+
+        .btn-admin.secondary {
+            background: #718096;
+        }
+
+        .btn-admin.secondary:hover {
+            background: #4a5568;
+        }
+
+        .btn-admin.success {
+            background: #38a169;
+        }
+
+        .btn-admin.success:hover {
+            background: #2f855a;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* رسائل التنبيه */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .alert.success {
+            background: #c6f6d5;
+            border: 1px solid #9ae6b4;
+            color: #22543d;
+        }
+
+        .alert.error {
+            background: #fed7d7;
+            border: 1px solid #fc8181;
+            color: #742a2a;
+        }
+
+        .alert.warning {
+            background: #feebc8;
+            border: 1px solid #fbd38d;
+            color: #744210;
+        }
+
+        /* المنتجات المضافة حديثاً */
+        .recent-products {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .recent-products h4 {
+            color: #1a202c;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .product-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .product-preview img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .product-preview-info {
+            flex: 1;
+        }
+
+        .product-preview-info h5 {
+            margin: 0 0 5px 0;
+            color: #2d3748;
+        }
+
+        .product-preview-info p {
+            margin: 0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        /* بقية الأنماط كما هي... */
+        /* Login Overlay */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.98);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .login-box {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #d4af37;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            width: 350px;
+        }
+
+        /* Search Bar */
+        .search-section {
+            padding: 40px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            margin-bottom: 30px;
+        }
+
+        .search-section h2 {
+            color: #1a202c;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+
+        #poda {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .input {
+            background-color: #ffffff;
+            border: 2px solid #e2e8f0;
+            width: 350px;
+            height: 56px;
+            border-radius: 10px;
+            color: #2d3748;
+            padding-inline: 59px;
+            font-size: 16px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 60px 0;
+            text-align: center;
+            background: #eeeeee;
+            background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            margin-bottom: 30px;
+        }
+
+        /* Filter Section */
+        .filter-section-wrapper {
+            background: #2d3748 url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80') no-repeat center center;
+            background-size: cover;
+            padding: 50px 20px;
+            margin-bottom: 40px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            color: white;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            margin-bottom: 50px;
+        }
+
+        .product-card {
+            background: #ffffff;
+            width: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image-container {
+            height: 250px;
+            background: #f1f1f1;
+            position: relative;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #c5a059;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .product-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .product-info h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #1a202c;
+        }
+
+        .btn-contact {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #1a202c;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .btn-contact:hover {
+            background: #c5a059;
+        }
+
+        /* Rating System */
+        .rating-section {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 40px 0;
+            margin: 50px 0;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a202c;
+            color: #ffffff;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .no-products {
+            padding: 40px;
+            color: #718096;
+            font-size: 18px;
+            text-align: center;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .main-content.with-sidebar {
+                margin-right: 0;
+                width: 100%;
+            }
+            
+            .sidebar {
+                width: 280px;
+                right: -280px;
+            }
+            
+            .sidebar.active {
+                right: 0;
+            }
+            
+            .sidebar-toggle.visible {
+                display: flex;
+                right: 20px;
+            }
+            
+            .sidebar.active ~ .sidebar-toggle {
+                right: 300px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <h2>متجر الغنى</h2>
+            
+            <div id="normalLogin">
+                <p id="loginMessage">يرجى إدخال اسمك للانتقال إلى تجربة تسوق فاخرة</p>
+                
+                <input type="text" id="userNameInput" placeholder="اكتب اسمك هنا..." class="login-input">
+                
+                <button onclick="submitLogin()" class="login-btn">
+                    دخول المتجر
+                </button>
+                
+                <button onclick="showAdminLoginForm()" class="login-btn admin-login-btn">
+                    <i class="fas fa-user-shield"></i> دخول المسؤول مباشرة
+                </button>
+            </div>
+            
+            <div id="adminLoginForm">
+                <p>دخول المسؤول - أدخل بيانات الدخول</p>
+                
+                <input type="text" id="adminNameInput" placeholder="اسم المسؤول" class="login-input">
+                <input type="password" id="adminPasswordInput" placeholder="كلمة مرور المسؤول" class="login-input">
+                
+                <button onclick="submitAdminLogin()" class="login-btn">
+                    <i class="fas fa-lock"></i> دخول كمسؤول
+                </button>
+                <button onclick="showNormalLogin()" class="login-btn" style="background: #718096;">
+                    العودة للدخول العادي
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- زر تبديل القائمة الجانبية -->
+    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- القائمة الجانبية -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-crown"></i> لوحة تحكم متجر الغنى</h3>
+            <p>إدارة محتوى المتجر بسهولة</p>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" onclick="showDashboard()">
+                <i class="fas fa-tachometer-alt"></i>اللوحة الرئيسية
+            </a></li>
+            
+            <li><a href="#" onclick="showAdminPanel()">
+                <i class="fas fa-plus-circle"></i>إضافة منتج جديد
+            </a></li>
+            
+            <li><a href="#" onclick="showAllProducts()">
+                <i class="fas fa-box-open"></i>إدارة المنتجات
+                <span class="badge" id="productsCount" style="background: #c5a059; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-right: auto;">0</span>
+            </a></li>
+            
+            <li><a href="#" onclick="showOrders()">
+                <i class="fas fa-shopping-cart"></i>الطلبات الجديدة
+                <span class="badge" id="orderCount" style="background: #2d3748; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-right: auto;">0</span>
+            </a></li>
+            
+            <li><a href="#" onclick="showStats()">
+                <i class="fas fa-chart-line"></i>الإحصائيات
+            </a></li>
+            
+            <li><a href="#" onclick="showCustomers()">
+                <i class="fas fa-users"></i>العملاء
+                <span class="badge" id="customerCount" style="background: #38a169; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-right: auto;">0</span>
+            </a></li>
+            
+            <li><a href="#" onclick="logoutAdmin()" style="color: #f56565;">
+                <i class="fas fa-sign-out-alt"></i>تسجيل خروج المسؤول
+            </a></li>
+        </ul>
+        
+        <div style="padding: 20px; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div style="color: #c5a059; font-weight: bold; margin-bottom: 10px;">
+                <i class="fas fa-user-shield"></i> حالة النظام
+            </div>
+            <div style="background: rgba(0,255,0,0.1); color: #48bb78; padding: 8px; border-radius: 5px; font-size: 0.9rem;">
+                <i class="fas fa-check-circle"></i> آمن - تم تنظيفه مع FBI
+            </div>
+            <div style="margin-top: 10px; font-size: 0.8rem; color: #a0aec0;">
+                <i class="fas fa-user"></i> مسؤول النظام: <span id="adminNameDisplay">ادم</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <div class="main-content" id="mainContent">
+        <header>
+            <div class="container">
+                <nav>
+                    <a href="#" class="logo">AL <span>GINA</span></a>
+                    <div class="user-info" onclick="resetLogin()">
+                        <span id="userDisplay">مرحباً</span>
+                        <span id="adminBadge" class="admin-badge">مسؤول</span>
+                        <i class="fas fa-user" style="margin-right: 8px;"></i>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- لوحة الإدارة الرئيسية -->
+        <div class="admin-panel" id="adminPanel">
+            <h3><i class="fas fa-plus-circle"></i> إضافة منتج جديد</h3>
+            
+            <!-- رسائل التنبيه -->
+            <div id="alertMessage" class="alert" style="display: none;"></div>
+            
+            <form id="addProductForm" onsubmit="return addProduct(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productName">اسم المنتج *</label>
+                        <input type="text" id="productName" placeholder="مثال: غرفة كلاسيك 058" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productCategory">التصنيف الرئيسي *</label>
+                        <select id="productCategory" required onchange="updateSubCategories()">
+                            <option value="">اختر التصنيف</option>
+                            <option value="bedroom">غرف النوم</option>
+                            <option value="sofas">الكنبات</option>
+                            <option value="electronics">إلكترونيات</option>
+                            <option value="tables">طاولات</option>
+                            <option value="chairs">كراسي</option>
+                            <option value="decor">ديكور</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="productSub">النوع الفرعي</label>
+                        <select id="productSub">
+                            <option value="default">اختر النوع الفرعي</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="productPrice">السعر (ريال سعودي)</label>
+                        <input type="number" id="productPrice" placeholder="السعر بالريال" min="0" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="productImage">رابط الصورة *</label>
+                    <input type="text" id="productImage" placeholder="images/product-001.jpg" required>
+                    <small style="color: #718096; margin-top: 5px; display: block;">
+                        مثال: images/IMG-20251010-WA0001.jpg أو رابط صورة من الإنترنت
+                    </small>
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="productDescription">وصف المنتج</label>
+                    <textarea id="productDescription" placeholder="أضف وصفاً مفصلاً للمنتج..."></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="btn-admin success">
+                        <i class="fas fa-save"></i> حفظ وإضافة المنتج
+                    </button>
+                    <button type="button" class="btn-admin" onclick="resetProductForm()">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </button>
+                    <button type="button" class="btn-admin secondary" onclick="hideAdminPanel()">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </form>
+            
+            <!-- المنتجات المضافة حديثاً -->
+            <div class="recent-products" id="recentProducts" style="display: none;">
+                <h4><i class="fas fa-history"></i> آخر المنتجات المضافة</h4>
+                <div id="recentProductsList"></div>
+            </div>
+        </div>
+
+        <!-- لوحة إدارة المنتجات -->
+        <div class="admin-panel" id="manageProductsPanel" style="display: none;">
+            <h3><i class="fas fa-box-open"></i> إدارة جميع المنتجات</h3>
+            
+            <div class="alert" id="manageAlert" style="display: none;"></div>
+            
+            <div style="margin-bottom: 20px;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="searchManageProducts" placeholder="ابحث عن منتج..." class="login-input" style="background: white; color: #2d3748;">
+                    </div>
+                    <div class="form-group">
+                        <select id="filterCategory" onchange="filterProducts()" style="background: white; color: #2d3748;">
+                            <option value="">جميع التصنيفات</option>
+                            <option value="bedroom">غرف النوم</option>
+                            <option value="sofas">الكنبات</option>
+                            <option value="electronics">إلكترونيات</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="productsListContainer">
+                <!-- سيتم عرض المنتجات هنا -->
+            </div>
+        </div>
+
+        <!-- لوحة الإحصائيات -->
+        <div class="admin-panel" id="statsPanel" style="display: none;">
+            <h3><i class="fas fa-chart-line"></i> الإحصائيات</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <i class="fas fa-box"></i>
+                    <h4>إجمالي المنتجات</h4>
+                    <p id="totalProducts">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h4>الطلبات اليوم</h4>
+                    <p id="todayOrders">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h4>العملاء الجدد</h4>
+                    <p id="newCustomers">0</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>نمو المبيعات</h4>
+                    <p id="salesGrowth">+99%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- بقية المحتوى -->
+        <section class="hero">
+            <div class="container">
+                <h1>أناقة منزلك تبدأ من هنا</h1>
+                <p>نقدم لكم أرقى تشكيلات المفروشات التي تضفي لمسة من الفخامة على مساحاتكم الخاصة.</p>
+            </div>
+        </section>
+
+        <!-- Search Bar Section -->
+        <section class="search-section">
+            <div class="container">
+                <h2>ابحث عن منتجك المفضل</h2>
+                <div id="poda">
+                    <div class="glow"></div>
+                    <div class="white"></div>
+                    <div class="border"></div>
+                    <div id="main">
+                        <input placeholder="ابحث هنا..." type="text" class="input" id="searchInput" />
+                        <div id="search-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </div>
+                        <div id="filter-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="filter-section-wrapper">
+                <div class="filter-content">
+                    <h2>اكتشف مجموعتنا</h2>
+                    <div class="filter-group">
+                        <button class="filter-btn active" onclick="filterMain('all', this)">الكل</button>
+                        <button class="filter-btn" onclick="filterMain('bedroom', this)">غرف النوم</button>
+                        <button class="filter-btn" onclick="filterMain('sofas', this)">الكنبات</button>
+                        <button class="filter-btn" onclick="filterMain('electronics', this)">إلكترونيات</button>
+                    </div>
+
+                    <div id="bedroom-subs" class="sub-filters">
+                        <button class="sub-btn active" onclick="filterSub('all', this)">كل الغرف</button>
+                        <button class="sub-btn" onclick="filterSub('open', this)">أبواب فتح</button>
+                        <button class="sub-btn" onclick="filterSub('slide', this)">أبواب سحاب</button>
+                        <button class="sub-btn" onclick="filterSub('both', this)">فتح وغلق</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="products-grid" id="products-container">
+                <!-- سيتم تحميل المنتجات هنا بواسطة JavaScript -->
+            </div>
+        </div>
+
+        <!-- Rating Section -->
+        <section class="rating-section">
+            <div class="container">
+                <h2>قيّم تجربتك معنا</h2>
+                <div class="rating" id="mainRating">
+                    <input type="radio" id="star5" name="rating" value="5" /><label for="star5"></label>
+                    <input type="radio" id="star4" name="rating" value="4" /><label for="star4"></label>
+                    <input type="radio" id="star3" name="rating" value="3" /><label for="star3"></label>
+                    <input type="radio" id="star2" name="rating" value="2" /><label for="star2"></label>
+                    <input type="radio" id="star1" name="rating" value="1" /><label for="star1"></label>
+                </div>
+                <div class="rating-info" id="ratingInfo">
+                    <div class="rating-value">لم يتم التقييم</div>
+                    <div class="rating-text">اختر عدد النجوم</div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <p>AL GINA للمفروشات - وجهتكم الأولى للتميز</p>
+                <div class="social-links" style="margin: 15px 0;">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <p style="font-size: 12px; color: #a0aec0;">&copy; 2026 جميع الحقوق محفوظة.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ===== نظام تسجيل الدخول الآمن =====
+        
+        const ADMIN_CREDENTIALS = {
+            "ادم": "ادم123",
+            "admin": "admin123"
+        };
+        
+        function showNormalLogin() {
+            document.getElementById('normalLogin').style.display = 'block';
+            document.getElementById('adminLoginForm').style.display = 'none';
+            document.getElementById('userNameInput').value = '';
+        }
+        
+        function showAdminLoginForm() {
+            document.getElementById('normalLogin').style.display = 'none';
+            document.getElementById('adminLoginForm').style.display = 'block';
+            document.getElementById('adminNameInput').value = '';
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminNameInput').focus();
+        }
+        
+        function submitLogin() {
+            const name = document.getElementById("userNameInput").value.trim();
+            if (name === "") {
+                showAlert("من فضلك، أدخل اسمك أولاً.", "error");
+                return;
+            }
+            
+            localStorage.setItem("alGinaUser", name);
+            
+            const customers = JSON.parse(localStorage.getItem('alGinaCustomers') || '[]');
+            if (!customers.includes(name)) {
+                customers.push(name);
+                localStorage.setItem('alGinaCustomers', JSON.stringify(customers));
+            }
+            
+            document.getElementById("loginOverlay").style.display = "none";
+            updateUserDisplay();
+            updateStats();
+            
+            if (name === "ادم") {
+                setTimeout(() => {
+                    if (confirm("مرحباً ادم! هل تريد الدخول كمسؤول لإدارة الموقع؟")) {
+                        showAdminLoginForm();
+                        document.getElementById("loginOverlay").style.display = "flex";
+                    }
+                }, 1000);
+            }
+        }
+        
+        function submitAdminLogin() {
+            const adminName = document.getElementById("adminNameInput").value.trim();
+            const adminPassword = document.getElementById("adminPasswordInput").value;
+            
+            if (adminName === "" || adminPassword === "") {
+                showAlert("من فضلك، أدخل اسم المسؤول وكلمة المرور.", "error");
+                return;
+            }
+            
+            if (ADMIN_CREDENTIALS[adminName] && ADMIN_CREDENTIALS[adminName] === adminPassword) {
+                localStorage.setItem("alGinaUser", adminName);
+                localStorage.setItem("alGinaAdmin", "true");
+                localStorage.setItem("alGinaAdminName", adminName);
+                
+                document.getElementById("loginOverlay").style.display = "none";
+                activateAdminPanel();
+                
+                showAlert(`مرحباً بك ${adminName}! تم تفعيل لوحة التحكم.`, "success");
+            } else {
+                showAlert("اسم المستخدم أو كلمة المرور غير صحيحة!", "error");
+            }
+        }
+        
+        function activateAdminPanel() {
+            document.getElementById("sidebar").classList.add("active");
+            document.getElementById("sidebarToggle").classList.add("visible");
+            document.getElementById("mainContent").classList.add("with-sidebar");
+            document.getElementById("adminBadge").classList.add("show");
+            updateUserDisplay();
+            updateStats();
+        }
+        
+        function updateUserDisplay() {
+            const userName = localStorage.getItem("alGinaUser");
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            
+            if (userName) {
+                document.getElementById("userDisplay").textContent = `مرحباً ${userName}`;
+                
+                if (isAdmin) {
+                    document.getElementById("adminNameDisplay").textContent = userName;
+                    document.getElementById("adminBadge").classList.add("show");
+                } else {
+                    document.getElementById("adminBadge").classList.remove("show");
+                }
+            }
+        }
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('with-sidebar');
+            
+            if (sidebar.classList.contains('active')) {
+                sidebarToggle.style.right = '300px';
+            } else {
+                sidebarToggle.style.right = '20px';
+            }
+        }
+        
+        function logoutAdmin() {
+            if (confirm("هل تريد تسجيل الخروج كمسؤول؟")) {
+                localStorage.removeItem("alGinaAdmin");
+                localStorage.removeItem("alGinaAdminName");
+                
+                document.getElementById("sidebar").classList.remove("active");
+                document.getElementById("sidebarToggle").classList.remove("visible");
+                document.getElementById("mainContent").classList.remove("with-sidebar");
+                document.getElementById("adminBadge").classList.remove("show");
+                
+                showAlert("تم تسجيل خروج المسؤول بنجاح.", "success");
+                updateUserDisplay();
+            }
+        }
+        
+        function resetLogin() {
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            
+            if (isAdmin) {
+                logoutAdmin();
+            } else {
+                if (confirm("هل تريد تسجيل الخروج؟")) {
+                    localStorage.removeItem("alGinaUser");
+                    document.getElementById("loginOverlay").style.display = "flex";
+                    showNormalLogin();
+                }
+            }
+        }
+        
+        // ===== نظام إدارة المنتجات =====
+        
+        // تعريف الأنواع الفرعية لكل تصنيف
+        const SUB_CATEGORIES = {
+            bedroom: ["open", "slide", "both", "modern", "classic", "royal", "luxury", "simple"],
+            sofas: ["modern", "classic", "corner", "leather", "fabric", "recliner"],
+            electronics: ["tv", "sound", "lighting", "smart", "gaming", "accessories"],
+            tables: ["dining", "coffee", "office", "console", "side"],
+            chairs: ["office", "dining", "armchair", "rocking", "bar"],
+            decor: ["mirrors", "clocks", "vases", "art", "lamps"]
+        };
+        
+        // مصفوفة المنتجات الأساسية
+        let products = [];
+        
+        // تحميل المنتجات من localStorage
+        function loadProductsFromStorage() {
+            const savedProducts = localStorage.getItem('alGinaProducts');
+            if (savedProducts) {
+                try {
+                    products = JSON.parse(savedProducts);
+                    if (!Array.isArray(products)) {
+                        products = [];
+                    }
+                } catch (e) {
+                    console.error('Error loading products:', e);
+                    products = [];
+                }
+            }
+            
+            // إذا لم تكن هناك منتجات، نقوم بتهيئة بعض المنتجات الافتراضية
+            if (products.length === 0) {
+                products = [
+                    { id: 1, name: "غرفة كلاسيك 058", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0058.jpg", price: "4500", description: "غرفة نوم كلاسيكية فاخرة", date: new Date().toLocaleString() },
+                    { id: 2, name: "كنب مودرن 057", category: "sofas", sub: "modern", img: "images/IMG-20251010-WA0057.jpg", price: "3200", description: "كنب عصري بتصميم فريد", date: new Date().toLocaleString() },
+                    { id: 3, name: "شاشة ذكية 053", category: "electronics", sub: "tv", img: "images/IMG-20251010-WA0053.jpg", price: "2800", description: "شاشة ذكية عالية الدقة", date: new Date().toLocaleString() }
+                ];
+                saveProductsToStorage();
+            }
+            
+            updateProductCount();
+        }
+        
+        // حفظ المنتجات في localStorage
+        function saveProductsToStorage() {
+            localStorage.setItem('alGinaProducts', JSON.stringify(products));
+            updateProductCount();
+        }
+        
+        // تحديث عدد المنتجات
+        function updateProductCount() {
+            document.getElementById('productsCount').textContent = products.length;
+            document.getElementById('totalProducts').textContent = products.length;
+        }
+        
+        // تحديث الأنواع الفرعية بناءً على التصنيف الرئيسي
+        function updateSubCategories() {
+            const category = document.getElementById('productCategory').value;
+            const subSelect = document.getElementById('productSub');
+            
+            subSelect.innerHTML = '<option value="default">اختر النوع الفرعي</option>';
+            
+            if (category && SUB_CATEGORIES[category]) {
+                SUB_CATEGORIES[category].forEach(sub => {
+                    const option = document.createElement('option');
+                    option.value = sub;
+                    option.textContent = getSubCategoryName(sub, category);
+                    subSelect.appendChild(option);
+                });
+            }
+        }
+        
+        // الحصول على اسم النوع الفرعي
+        function getSubCategoryName(sub, category) {
+            const names = {
+                open: "أبواب فتح",
+                slide: "أبواب سحاب",
+                both: "فتح وغلق",
+                modern: "مودرن",
+                classic: "كلاسيك",
+                royal: "ملكي",
+                luxury: "فخم",
+                simple: "بسيط",
+                corner: "زاوية",
+                leather: "جلد",
+                fabric: "قماش",
+                recliner: "مريح",
+                tv: "تلفزيون",
+                sound: "صوت",
+                lighting: "إضاءة",
+                smart: "ذكي",
+                gaming: "ألعاب",
+                accessories: "ملحقات",
+                dining: "طعام",
+                coffee: "قهوة",
+                office: "مكتب",
+                console: "كونسول",
+                side: "جانبي",
+                armchair: "كرسي ذراعين",
+                rocking: "هزاز",
+                bar: "بار",
+                mirrors: "مرايا",
+                clocks: "ساعات",
+                vases: "مزهريات",
+                art: "لوحات فنية",
+                lamps: "مصابيح"
+            };
+            
+            return names[sub] || sub;
+        }
+        
+        // عرض رسالة تنبيه
+        function showAlert(message, type = "success") {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert ${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // عرض رسالة في لوحة إدارة المنتجات
+        function showManageAlert(message, type = "success") {
+            const alertDiv = document.getElementById('manageAlert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert ${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // إضافة منتج جديد
+        function addProduct(event) {
+            event.preventDefault();
+            
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            if (!isAdmin) {
+                showAlert("عفواً، يجب أن تكون مسؤولاً لإضافة منتجات.", "error");
+                return false;
+            }
+            
+            const productName = document.getElementById('productName').value.trim();
+            const productCategory = document.getElementById('productCategory').value;
+            const productSub = document.getElementById('productSub').value;
+            const productImage = document.getElementById('productImage').value.trim();
+            const productDescription = document.getElementById('productDescription').value.trim();
+            const productPrice = document.getElementById('productPrice').value;
+            
+            // التحقق من البيانات
+            if (!productName) {
+                showAlert("من فضلك، أدخل اسم المنتج.", "error");
+                return false;
+            }
+            
+            if (!productCategory) {
+                showAlert("من فضلك، اختر تصنيف المنتج.", "error");
+                return false;
+            }
+            
+            if (!productImage) {
+                showAlert("من فضلك، أدخل رابط الصورة.", "error");
+                return false;
+            }
+            
+            // إنشاء المنتج الجديد
+            const newProduct = {
+                id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
+                name: productName,
+                category: productCategory,
+                sub: productSub === "default" ? "open" : productSub,
+                img: productImage,
+                description: productDescription,
+                price: productPrice || null,
+                date: new Date().toLocaleString(),
+                addedBy: localStorage.getItem("alGinaUser") || "مسؤول"
+            };
+            
+            // إضافة المنتج إلى المصفوفة
+            products.push(newProduct);
+            
+            // حفظ في التخزين
+            saveProductsToStorage();
+            
+            // عرض المنتجات
+            renderItems(products);
+            
+            // عرض رسالة النجاح
+            showAlert(`تم إضافة المنتج "${productName}" بنجاح!`, "success");
+            
+            // عرض المنتج المضافة حديثاً
+            showRecentProduct(newProduct);
+            
+            // إعادة تعيين النموذج
+            resetProductForm();
+            
+            return false;
+        }
+        
+        // عرض المنتج المضافة حديثاً
+        function showRecentProduct(product) {
+            const recentProductsDiv = document.getElementById('recentProducts');
+            const recentProductsList = document.getElementById('recentProductsList');
+            
+            recentProductsDiv.style.display = 'block';
+            
+            const productDiv = document.createElement('div');
+            productDiv.className = 'product-preview';
+            productDiv.innerHTML = `
+                <img src="${product.img}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/60x60?text=صورة'">
+                <div class="product-preview-info">
+                    <h5>${product.name}</h5>
+                    <p>${product.category} - ${product.price ? product.price + ' ريال' : 'بدون سعر'}</p>
+                    <small style="color: #a0aec0;">${product.date}</small>
+                </div>
+            `;
+            
+            recentProductsList.insertBefore(productDiv, recentProductsList.firstChild);
+            
+            // الحد من عدد المنتجات المعروضة
+            if (recentProductsList.children.length > 3) {
+                recentProductsList.removeChild(recentProductsList.lastChild);
+            }
+        }
+        
+        // إعادة تعيين نموذج المنتج
+        function resetProductForm() {
+            document.getElementById('addProductForm').reset();
+            document.getElementById('productSub').innerHTML = '<option value="default">اختر النوع الفرعي</option>';
+            document.getElementById('productImage').value = 'images/';
+        }
+        
+        // عرض لوحة الإضافة
+        function showAdminPanel() {
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            if (!isAdmin) {
+                showAlert("يجب أن تكون مسؤولاً للوصول إلى هذه الصفحة.", "error");
+                return;
+            }
+            
+            hideAllPanels();
+            document.getElementById('adminPanel').style.display = 'block';
+        }
+        
+        // عرض جميع المنتجات
+        function showAllProducts() {
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            if (!isAdmin) {
+                showAlert("يجب أن تكون مسؤولاً للوصول إلى هذه الصفحة.", "error");
+                return;
+            }
+            
+            hideAllPanels();
+            document.getElementById('manageProductsPanel').style.display = 'block';
+            renderAllProducts();
+        }
+        
+        // عرض لوحة الإحصائيات
+        function showDashboard() {
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            if (!isAdmin) {
+                showAlert("يجب أن تكون مسؤولاً للوصول إلى هذه الصفحة.", "error");
+                return;
+            }
+            
+            hideAllPanels();
+            document.getElementById('statsPanel').style.display = 'block';
+            updateStats();
+        }
+        
+        function showStats() {
+            showDashboard();
+        }
+        
+        // إخفاء جميع اللوحات
+        function hideAllPanels() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('manageProductsPanel').style.display = 'none';
+            document.getElementById('statsPanel').style.display = 'none';
+            document.getElementById('recentProducts').style.display = 'none';
+            document.getElementById('recentProductsList').innerHTML = '';
+        }
+        
+        function hideAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+        
+        // عرض جميع المنتجات في لوحة الإدارة
+        function renderAllProducts() {
+            const container = document.getElementById('productsListContainer');
+            
+            if (products.length === 0) {
+                container.innerHTML = '<div class="no-products">لا توجد منتجات مضافة بعد.</div>';
+                return;
+            }
+            
+            let html = '<div style="display: grid; gap: 15px;">';
+            
+            products.forEach(product => {
+                html += `
+                    <div class="product-preview" style="justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <img src="${product.img}" alt="${product.name}" style="width: 50px; height: 50px;" onerror="this.src='https://via.placeholder.com/50x50?text=صورة'">
+                            <div>
+                                <h5 style="margin: 0;">${product.name}</h5>
+                                <p style="margin: 0; color: #718096; font-size: 0.9rem;">
+                                    ${getCategoryName(product.category)} - ${product.price ? product.price + ' ريال' : 'بدون سعر'}
+                                </p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-admin" style="padding: 5px 10px; font-size: 0.9rem;" onclick="editProduct(${product.id})">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="btn-admin secondary" style="padding: 5px 10px; font-size: 0.9rem;" onclick="deleteProduct(${product.id})">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // الحصول على اسم التصنيف
+        function getCategoryName(category) {
+            const names = {
+                bedroom: "غرف النوم",
+                sofas: "الكنبات",
+                electronics: "إلكترونيات",
+                tables: "طاولات",
+                chairs: "كراسي",
+                decor: "ديكور"
+            };
+            
+            return names[category] || category;
+        }
+        
+        // حذف منتج
+        function deleteProduct(id) {
+            if (!confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+                return;
+            }
+            
+            const productIndex = products.findIndex(p => p.id === id);
+            if (productIndex !== -1) {
+                const productName = products[productIndex].name;
+                products.splice(productIndex, 1);
+                saveProductsToStorage();
+                renderItems(products);
+                renderAllProducts();
+                showManageAlert(`تم حذف المنتج "${productName}" بنجاح.`, "success");
+            }
+        }
+        
+        // تعديل منتج
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+            
+            showAdminPanel();
+            
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productCategory').value = product.category;
+            updateSubCategories();
+            setTimeout(() => {
+                document.getElementById('productSub').value = product.sub;
+            }, 100);
+            document.getElementById('productImage').value = product.img;
+            document.getElementById('productDescription').value = product.description || '';
+            document.getElementById('productPrice').value = product.price || '';
+            
+            showAlert("يمكنك تعديل المنتج وحفظ التغييرات.", "warning");
+        }
+        
+        // تصفية المنتجات في لوحة الإدارة
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchManageProducts').value.toLowerCase();
+            const categoryFilter = document.getElementById('filterCategory').value;
+            
+            let filteredProducts = products;
+            
+            if (searchTerm) {
+                filteredProducts = filteredProducts.filter(p => 
+                    p.name.toLowerCase().includes(searchTerm) ||
+                    (p.description && p.description.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            if (categoryFilter) {
+                filteredProducts = filteredProducts.filter(p => p.category === categoryFilter);
+            }
+            
+            const container = document.getElementById('productsListContainer');
+            
+            if (filteredProducts.length === 0) {
+                container.innerHTML = '<div class="no-products">لا توجد منتجات تطابق البحث.</div>';
+                return;
+            }
+            
+            let html = '<div style="display: grid; gap: 15px;">';
+            
+            filteredProducts.forEach(product => {
+                html += `
+                    <div class="product-preview" style="justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <img src="${product.img}" alt="${product.name}" style="width: 50px; height: 50px;" onerror="this.src='https://via.placeholder.com/50x50?text=صورة'">
+                            <div>
+                                <h5 style="margin: 0;">${product.name}</h5>
+                                <p style="margin: 0; color: #718096; font-size: 0.9rem;">
+                                    ${getCategoryName(product.category)} - ${product.price ? product.price + ' ريال' : 'بدون سعر'}
+                                </p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-admin" style="padding: 5px 10px; font-size: 0.9rem;" onclick="editProduct(${product.id})">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="btn-admin secondary" style="padding: 5px 10px; font-size: 0.9rem;" onclick="deleteProduct(${product.id})">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        // عرض المنتجات في المتجر
+        function renderItems(items) {
+            const container = document.getElementById('products-container');
+            if (!container) return;
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div class="no-products">عذراً، لا توجد منتجات مطابقة لبحثك.</div>';
+                return;
+            }
+            
+            container.innerHTML = items.map(p => `
+                <div class="product-card">
+                    <div class="product-image-container">
+                        <img src="${p.img}" class="product-image" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x250?text=Image+Not+Found'">
+                        ${p.price ? `<div class="product-badge">${p.price} ريال</div>` : ''}
+                    </div>
+                    <div class="product-info">
+                        <h3>${p.name}</h3>
+                        <p style="color: #718096; font-size: 0.9rem; margin: 10px 0;">
+                            ${getCategoryName(p.category)}${p.sub && p.sub !== 'default' ? ' - ' + getSubCategoryName(p.sub, p.category) : ''}
+                        </p>
+                        ${p.description ? `<p style="color: #4a5568; font-size: 0.9rem; margin: 10px 0;">${p.description}</p>` : ''}
+                        <button class="btn-contact" onclick="sendOrder('${p.name.replace(/'/g, "\\'")}')">طلب عبر واتساب</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // وظائف الطلبات
+        function sendOrder(productName) {
+            const myNumber = "963945082925"; 
+            const userName = localStorage.getItem("alGinaUser") || "عميل جديد";
+            const message = `مرحباً متجر الغنى،%0aأنا العميل: *${userName}*%0aأريد طلب: *${productName}*%0aأرجو التواصل معي لتأكيد الطلب.`;
+            const whatsappURL = `https://wa.me/${myNumber}?text=${message}`;
+            window.open(whatsappURL, '_blank');
+            
+            const orders = JSON.parse(localStorage.getItem('alGinaOrders') || '[]');
+            orders.push({
+                product: productName,
+                customer: userName,
+                date: new Date().toLocaleString(),
+                status: 'جديد'
+            });
+            localStorage.setItem('alGinaOrders', JSON.stringify(orders));
+            updateStats();
+        }
+        
+        // تحديث الإحصائيات
+        function updateStats() {
+            document.getElementById('totalProducts').textContent = products.length;
+            document.getElementById('productsCount').textContent = products.length;
+            
+            const orders = JSON.parse(localStorage.getItem('alGinaOrders') || '[]');
+            document.getElementById('orderCount').textContent = orders.length;
+            
+            const today = new Date().toLocaleDateString();
+            const todayOrders = orders.filter(order => {
+                const orderDate = new Date(order.date).toLocaleDateString();
+                return orderDate === today;
+            }).length;
+            document.getElementById('todayOrders').textContent = todayOrders;
+            
+            const customers = JSON.parse(localStorage.getItem('alGinaCustomers') || '[]');
+            document.getElementById('customerCount').textContent = customers.length;
+            document.getElementById('newCustomers').textContent = customers.length;
+        }
+        
+        // البحث في المتجر
+        const searchInput = document.getElementById('searchInput');
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            const allBtn = document.querySelector('.filter-btn[onclick*="all"]');
+            if (allBtn) allBtn.classList.add('active');
+            
+            const subMenu = document.getElementById('bedroom-subs');
+            if (subMenu) subMenu.style.display = 'none';
+            
+            if (searchTerm === '') {
+                renderItems(products);
+            } else {
+                const filtered = products.filter(p => 
+                    p.name.toLowerCase().includes(searchTerm) || 
+                    p.category.toLowerCase().includes(searchTerm) ||
+                    (p.sub && p.sub.toLowerCase().includes(searchTerm)) ||
+                    (p.description && p.description.toLowerCase().includes(searchTerm))
+                );
+                renderItems(filtered);
+            }
+        }
+        
+        if (searchInput) {
+            searchInput.addEventListener('input', performSearch);
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+        }
+        
+        function filterMain(cat, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const subMenu = document.getElementById('bedroom-subs');
+            if (subMenu) subMenu.style.display = (cat === 'bedroom') ? 'block' : 'none';
+            
+            let filtered = [];
+            if (cat === 'all') {
+                filtered = products;
+            } else {
+                filtered = products.filter(p => p.category === cat);
+            }
+            renderItems(filtered);
+        }
+        
+        function filterSub(subType, btn) {
+            document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            let filtered = products.filter(p => p.category === 'bedroom');
+            if (subType !== 'all') {
+                filtered = filtered.filter(p => p.sub === subType);
+            }
+            renderItems(filtered);
+        }
+        
+        // وظائف إضافية
+        function showOrders() {
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            if (!isAdmin) {
+                showAlert("يجب أن تكون مسؤولاً للوصول إلى هذه الصفحة.", "error");
+                return;
+            }
+            alert("قريباً: إدارة الطلبات");
+        }
+        
+        function showCustomers() {
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            if (!isAdmin) {
+                showAlert("يجب أن تكون مسؤولاً للوصول إلى هذه الصفحة.", "error");
+                return;
+            }
+            alert("قريباً: إدارة العملاء");
+        }
+        
+        // ===== تحميل الصفحة =====
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProductsFromStorage();
+            
+            const userName = localStorage.getItem("alGinaUser");
+            const isAdmin = localStorage.getItem("alGinaAdmin") === "true";
+            
+            if (!userName) {
+                document.getElementById("loginOverlay").style.display = "flex";
+                showNormalLogin();
+            } else {
+                document.getElementById("loginOverlay").style.display = "none";
+                updateUserDisplay();
+                
+                if (isAdmin) {
+                    activateAdminPanel();
+                }
+                
+                renderItems(products);
+                updateStats();
+            }
+        });
+    </script>
+</body>
+</html>
