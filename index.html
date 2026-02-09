@@ -254,13 +254,31 @@
 </head>
 <body>
 
-    <!-- Login Overlay -->
+       <!-- Login Overlay -->
     <div id="loginOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.98); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); font-family: 'Cairo', sans-serif;">
-        <div style="background: #1a1a1a; padding: 40px; border-radius: 20px; border: 1px solid #d4af37; text-align: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); width: 320px;">
-            <h2 style="color: #d4af37; margin: 0 0 10px 0;">متجر الغنى</h2>
-            <p style="color: #ccc; margin-bottom: 25px;">يرجى إدخال اسمك للانتقال إلى تجربة تسوق فاخرة</p>
-            <input type="text" id="userNameInput" placeholder="اكتب اسمك هنا..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; background: #222; color: white; text-align: center; outline: none; font-family: 'Cairo', sans-serif;">
-            <button onclick="submitLogin()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #d4af37, #fcf6ba); color: #000; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; font-family: 'Cairo', sans-serif;">دخول المتجر</button>
+        <div style="background: #1a1a1a; padding: 40px; border-radius: 20px; border: 1px solid #c5a059; text-align: center; box-shadow: 0 0 30px rgba(197, 160, 89, 0.3); width: 350px;">
+            <h2 style="color: #c5a059; margin: 0 0 10px 0; font-size: 26px;">متجر الغنى</h2>
+            <p style="color: #ccc; margin-bottom: 25px; font-size: 14px;">اختر طريقة الدخول للمتابعة</p>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                <button id="clientBtn" onclick="selectUserType('client')" style="flex: 1; padding: 12px; background: #2d3748; color: white; border: 2px solid #c5a059; border-radius: 10px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif;">عميل</button>
+                <button id="adminBtn" onclick="selectUserType('admin')" style="flex: 1; padding: 12px; background: #1a1a1a; color: #c5a059; border: 2px solid #444; border-radius: 10px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif;">مسؤول</button>
+            </div>
+            
+            <div id="clientSection" style="display: block;">
+                <p style="color: #c5a059; margin-bottom: 15px; font-size: 14px;">أدخل اسمك للبدء</p>
+                <input type="text" id="userNameInput" placeholder="اسمك هنا..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; background: #222; color: white; text-align: center; outline: none; font-family: 'Cairo', sans-serif;">
+                <button onclick="submitLogin()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #c5a059, #fcf6ba); color: #1a202c; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; font-family: 'Cairo', sans-serif;">الدخول كعميل</button>
+            </div>
+            
+            <div id="adminSection" style="display: none;">
+                <p style="color: #c5a059; margin-bottom: 15px; font-size: 14px;">الدخول لوحة التحكم</p>
+                <input type="text" id="adminNameInput" placeholder="اسم المسؤول..." style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #444; border-radius: 10px; background: #222; color: white; text-align: center; outline: none; font-family: 'Cairo', sans-serif;">
+                <input type="password" id="adminPassInput" placeholder="كلمة المرور..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; background: #222; color: white; text-align: center; outline: none; font-family: 'Cairo', sans-serif;">
+                <button onclick="submitAdminLogin()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #1a202c, #2d3748); color: #c5a059; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; font-family: 'Cairo', sans-serif;">الدخول كمسؤول</button>
+            </div>
+            
+            <p style="color: #666; font-size: 12px; margin-top: 20px;">كلمة مرور المسؤول: 12345</p>
         </div>
     </div>
 
@@ -461,6 +479,89 @@
         }
 
         window.onload = () => renderItems(products);
+        // نظام تسجيل الدخول المزدوج
+let selectedUserType = 'client';
+
+function selectUserType(type) {
+    selectedUserType = type;
+    
+    // تحديث الأزرار
+    document.getElementById('clientBtn').style.background = type === 'client' ? '#2d3748' : '#1a1a1a';
+    document.getElementById('clientBtn').style.color = type === 'client' ? 'white' : '#c5a059';
+    document.getElementById('clientBtn').style.border = type === 'client' ? '2px solid #c5a059' : '2px solid #444';
+    
+    document.getElementById('adminBtn').style.background = type === 'admin' ? '#2d3748' : '#1a1a1a';
+    document.getElementById('adminBtn').style.color = type === 'admin' ? 'white' : '#c5a059';
+    document.getElementById('adminBtn').style.border = type === 'admin' ? '2px solid #c5a059' : '2px solid #444';
+    
+    // إظهار/إخفاء الأقسام
+    document.getElementById('clientSection').style.display = type === 'client' ? 'block' : 'none';
+    document.getElementById('adminSection').style.display = type === 'admin' ? 'block' : 'none';
+}
+
+function submitAdminLogin() {
+    const name = document.getElementById('adminNameInput').value;
+    const password = document.getElementById('adminPassInput').value;
+    
+    if (name.trim() === "" || password.trim() === "") {
+        alert("الرجاء إدخال اسم المسؤول وكلمة المرور");
+        return;
+    }
+    
+    if (password === "12345") {
+        localStorage.setItem("alGinaUser", name);
+        localStorage.setItem("alGinaUserType", "admin");
+        document.getElementById("loginOverlay").style.display = "none";
+        updateUserDisplay();
+        alert(`مرحباً بك مسؤول ${name}!`);
+    } else {
+        alert("كلمة المرور غير صحيحة. حاول مرة أخرى.");
+    }
+}
+
+function submitLogin() {
+    const name = document.getElementById("userNameInput").value;
+    if (name.trim() !== "") {
+        localStorage.setItem("alGinaUser", name);
+        localStorage.setItem("alGinaUserType", "client");
+        document.getElementById("loginOverlay").style.display = "none";
+        updateUserDisplay();
+    } else {
+        alert("من فضلك، أدخل اسمك أولاً.");
+    }
+}
+
+function updateUserDisplay() {
+    const userName = localStorage.getItem("alGinaUser");
+    const userType = localStorage.getItem("alGinaUserType");
+    if (userName) {
+        const typeIcon = userType === 'admin' ? '👑 ' : '👤 ';
+        document.getElementById("userDisplay").innerHTML = `${typeIcon} ${userName}`;
+        document.getElementById("userDisplay").style.color = userType === 'admin' ? '#c5a059' : '';
+        document.getElementById("userDisplay").style.fontWeight = userType === 'admin' ? '800' : '700';
+    }
+}
+
+function resetLogin() {
+    localStorage.removeItem("alGinaUser");
+    localStorage.removeItem("alGinaUserType");
+    document.getElementById("loginOverlay").style.display = "flex";
+    document.getElementById("userNameInput").value = "";
+    document.getElementById("adminNameInput").value = "";
+    document.getElementById("adminPassInput").value = "";
+    selectUserType('client');
+}
+
+// التحقق من حالة تسجيل الدخول عند التحميل
+window.addEventListener('load', function() {
+    const userName = localStorage.getItem("alGinaUser");
+    if (userName) {
+        document.getElementById("loginOverlay").style.display = "none";
+        updateUserDisplay();
+    } else {
+        selectUserType('client');
+    }
+});
     </script>
 </body>
 </html>
