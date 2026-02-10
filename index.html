@@ -250,6 +250,28 @@
             color: #718096;
             font-size: 18px;
         }
+                /* تنسيقات إضافية لنظام المنتجات */
+        .admin-add-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .admin-add-btn:hover {
+            background: #d4b873 !important;
+            transform: scale(1.05);
+        }
+        
+        /* تنسيق الحقول في المودال */
+        #addProductForm input,
+        #addProductForm select {
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+        }
+        
+        #addProductForm input:focus,
+        #addProductForm select:focus {
+            outline: none;
+            border-color: #c5a059 !important;
+        }
     </style>
 </head>
 <body>
@@ -337,7 +359,50 @@
             <p style="font-size: 12px; color: #a0aec0;">&copy; 2026 جميع الحقوق محفوظة.</p>
         </div>
     </footer>
-
+    <!-- Modal إضافة المنتجات (للمسؤولين فقط) -->
+    <div id="addProductModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001; justify-content: center; align-items: center;">
+        <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; border: 2px solid #c5a059; color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="color: #c5a059; margin: 0;">إضافة منتج جديد</h3>
+                <button onclick="closeAddProductModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
+            </div>
+            
+            <form id="addProductForm" onsubmit="addNewProduct(event)">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #c5a059;">اسم المنتج</label>
+                    <input type="text" id="newProductName" required style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; background: #2d3748; color: white;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #c5a059;">الفئة الرئيسية</label>
+                    <select id="newProductCategory" required style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; background: #2d3748; color: white;">
+                        <option value="bedroom">غرف النوم</option>
+                        <option value="sofas">الكنبات</option>
+                        <option value="electronics">إلكترونيات</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #c5a059;">النوع الفرعي</label>
+                    <select id="newProductSub" required style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; background: #2d3748; color: white;">
+                        <option value="open">أبواب فتح</option>
+                        <option value="slide">أبواب سحاب</option>
+                        <option value="both">فتح وغلق</option>
+                    </select>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; color: #c5a059;">رابط الصورة</label>
+                    <input type="text" id="newProductImage" placeholder="images/IMG-20251010-WA0XXX.jpg" required style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; background: #2d3748; color: white;">
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 25px;">
+                    <button type="button" onclick="closeAddProductModal()" style="flex: 1; padding: 12px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer;">إلغاء</button>
+                    <button type="submit" style="flex: 1; padding: 12px; background: #c5a059; color: #1a202c; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">إضافة المنتج</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <script>
         // WhatsApp Integration
         function sendOrder(productName) {
@@ -561,6 +626,143 @@ window.addEventListener('load', function() {
     } else {
         selectUserType('client');
     }
+});
+        // نظام إضافة المنتجات (للمسؤولين فقط)
+function showAddProductModal() {
+    const userType = localStorage.getItem("alGinaUserType");
+    if (userType !== "admin") {
+        alert("هذه الميزة متاحة فقط للمسؤولين!");
+        return;
+    }
+    document.getElementById("addProductModal").style.display = "flex";
+}
+
+function closeAddProductModal() {
+    document.getElementById("addProductModal").style.display = "none";
+    document.getElementById("addProductForm").reset();
+}
+
+function addNewProduct(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById("newProductName").value;
+    const category = document.getElementById("newProductCategory").value;
+    const sub = document.getElementById("newProductSub").value;
+    const img = document.getElementById("newProductImage").value;
+    
+    if (!name || !category || !sub || !img) {
+        alert("يرجى ملء جميع الحقول!");
+        return;
+    }
+    
+    // إنشاء معرف جديد للمنتج
+    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    
+    // إضافة المنتج الجديد
+    const newProduct = {
+        id: newId,
+        name: name,
+        category: category,
+        sub: sub,
+        img: img
+    };
+    
+    products.push(newProduct);
+    
+    // حفظ في localStorage ليتم استرجاعه عند تحديث الصفحة
+    saveProductsToLocalStorage();
+    
+    // تحديث العرض
+    renderItems(products);
+    
+    // إغلاق المودال وإعادة الضبط
+    closeAddProductModal();
+    
+    alert(`تم إضافة المنتج "${name}" بنجاح!`);
+}
+
+function saveProductsToLocalStorage() {
+    try {
+        localStorage.setItem("alGinaProducts", JSON.stringify(products));
+    } catch (e) {
+        console.error("Error saving products:", e);
+    }
+}
+
+function loadProductsFromLocalStorage() {
+    try {
+        const savedProducts = localStorage.getItem("alGinaProducts");
+        if (savedProducts) {
+            const parsedProducts = JSON.parse(savedProducts);
+            // دمج المنتجات المحفوظة مع المنتجات الأصلية (تجنب التكرار)
+            const existingIds = products.map(p => p.id);
+            parsedProducts.forEach(product => {
+                if (!existingIds.includes(product.id)) {
+                    products.push(product);
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Error loading products:", e);
+    }
+}
+
+// تعديل دالة updateUserDisplay لإضافة زر إضافة المنتجات للمسؤولين
+function updateUserDisplay() {
+    const userName = localStorage.getItem("alGinaUser");
+    const userType = localStorage.getItem("alGinaUserType");
+    const userDisplay = document.getElementById("userDisplay");
+    
+    if (userName) {
+        const typeIcon = userType === 'admin' ? '👑 ' : '👤 ';
+        userDisplay.innerHTML = `${typeIcon} ${userName}`;
+        userDisplay.style.color = userType === 'admin' ? '#c5a059' : '';
+        userDisplay.style.fontWeight = userType === 'admin' ? '800' : '700';
+        
+        // إضافة زر إضافة منتج للمسؤولين
+        if (userType === 'admin') {
+            // إزالة الزر السابق إذا موجود
+            const oldButton = document.querySelector('.admin-add-btn');
+            if (oldButton) oldButton.remove();
+            
+            // إنشاء زر جديد
+            const addButton = document.createElement('button');
+            addButton.innerHTML = '<i class="fas fa-plus"></i> إضافة منتج';
+            addButton.className = 'admin-add-btn';
+            addButton.onclick = showAddProductModal;
+            addButton.style.cssText = `
+                background: #c5a059;
+                color: #1a202c;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 5px;
+                margin-right: 15px;
+                cursor: pointer;
+                font-weight: bold;
+                font-family: 'Cairo', sans-serif;
+                font-size: 14px;
+            `;
+            
+            // إضافة الزر بجوار معلومات المستخدم
+            const userInfoDiv = document.querySelector('.user-info');
+            userInfoDiv.parentNode.insertBefore(addButton, userInfoDiv);
+        } else {
+            // إزالة الزر إذا كان المستخدم ليس مسؤولاً
+            const adminButton = document.querySelector('.admin-add-btn');
+            if (adminButton) adminButton.remove();
+        }
+    }
+}
+
+// تحميل المنتجات المحفوظة عند بدء التشغيل
+window.addEventListener('load', function() {
+    const userName = localStorage.getItem("alGinaUser");
+    if (userName) {
+        document.getElementById("loginOverlay").style.display = "none";
+        updateUserDisplay();
+    }
+    loadProductsFromLocalStorage();
+    renderItems(products);
 });
     </script>
 </body>
