@@ -183,6 +183,7 @@
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: 0.3s;
+            cursor: pointer;
         }
 
         .product-card:hover {
@@ -250,13 +251,13 @@
             color: #718096;
             font-size: 18px;
         }
-                /* تنسيقات إضافية لنظام المنتجات */
-        .admin-add-btn {
+        
+        /* تنسيقات إضافية لنظام المنتجات */
+        .admin-btn {
             transition: all 0.3s ease;
         }
         
-        .admin-add-btn:hover {
-            background: #d4b873 !important;
+        .admin-btn:hover {
             transform: scale(1.05);
         }
         
@@ -272,74 +273,80 @@
             outline: none;
             border-color: #c5a059 !important;
         }
+        
         /* تنسيقات نظام الطلبات */
-.order-filter-btn {
-    padding: 8px 20px;
-    background: #2d3748;
-    color: white;
-    border: 1px solid #444;
-    border-radius: 25px;
-    cursor: pointer;
-    font-family: 'Cairo', sans-serif;
-    font-size: 14px;
-    transition: all 0.3s;
-}
+        .order-filter-btn {
+            padding: 8px 20px;
+            background: #2d3748;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
 
-.order-filter-btn.active, .order-filter-btn:hover {
-    background: #c5a059;
-    color: #1a202c;
-    border-color: #c5a059;
-}
+        .order-filter-btn.active, .order-filter-btn:hover {
+            background: #c5a059;
+            color: #1a202c;
+            border-color: #c5a059;
+        }
 
-.order-card {
-    background: #2d3748;
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 15px;
-    border-right: 5px solid #c5a059;
-}
+        .order-card {
+            background: #2d3748;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-right: 5px solid #c5a059;
+        }
 
-.order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-.order-status {
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-}
+        .order-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
 
-.status-new { background: #e53e3e; color: white; }
-.status-processing { background: #d69e2e; color: white; }
-.status-completed { background: #38a169; color: white; }
-.status-cancelled { background: #718096; color: white; }
+        .status-new { background: #e53e3e; color: white; }
+        .status-processing { background: #d69e2e; color: white; }
+        .status-completed { background: #38a169; color: white; }
+        .status-cancelled { background: #718096; color: white; }
 
-.order-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
 
-.order-action-btn {
-    padding: 6px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-family: 'Cairo', sans-serif;
-    font-size: 13px;
-    font-weight: bold;
-}
+        .order-action-btn {
+            padding: 6px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        
+        .order-action-btn:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
 
-       <!-- Login Overlay -->
+    <!-- Login Overlay -->
     <div id="loginOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.98); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); font-family: 'Cairo', sans-serif;">
         <div style="background: #1a1a1a; padding: 40px; border-radius: 20px; border: 1px solid #c5a059; text-align: center; box-shadow: 0 0 30px rgba(197, 160, 89, 0.3); width: 350px;">
             <h2 style="color: #c5a059; margin: 0 0 10px 0; font-size: 26px;">متجر الغنى</h2>
@@ -363,7 +370,7 @@
                 <button onclick="submitAdminLogin()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #1a202c, #2d3748); color: #c5a059; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; font-family: 'Cairo', sans-serif;">الدخول كمسؤول</button>
             </div>
             
-            <p style="color: #666; font-size: 12px; margin-top: 20px;">كلمة مرور المسؤول مشفرة تماما  </p>
+            <p style="color: #666; font-size: 12px; margin-top: 20px;">كلمة مرور المسؤول: 12345</p>
         </div>
     </div>
 
@@ -422,7 +429,8 @@
             <p style="font-size: 12px; color: #a0aec0;">&copy; 2026 جميع الحقوق محفوظة.</p>
         </div>
     </footer>
-    <!-- Modal إضافة المنتجات (للمسؤولين فقط) -->
+
+    <!-- Modal إضافة المنتجات -->
     <div id="addProductModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001; justify-content: center; align-items: center;">
         <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; border: 2px solid #c5a059; color: white;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
@@ -466,118 +474,79 @@
             </form>
         </div>
     </div>
+
     <!-- Modal إدارة الطلبات -->
-<div id="ordersModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10002; justify-content: center; align-items: flex-start; padding-top: 50px; overflow-y: auto; font-family: 'Cairo', sans-serif;">
-    <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 1000px; border: 2px solid #c5a059; color: white; margin-bottom: 50px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h3 style="color: #c5a059; margin: 0; font-size: 24px;"><i class="fas fa-shopping-cart"></i> إدارة الطلبات</h3>
-            <button onclick="closeOrdersModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
-        </div>
-        
-        <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-            <button onclick="filterOrders('all')" id="filterAll" class="order-filter-btn active">جميع الطلبات</button>
-            <button onclick="filterOrders('new')" id="filterNew" class="order-filter-btn">جديدة</button>
-            <button onclick="filterOrders('processing')" id="filterProcessing" class="order-filter-btn">قيد المعالجة</button>
-            <button onclick="filterOrders('completed')" id="filterCompleted" class="order-filter-btn">مكتملة</button>
-            <button onclick="filterOrders('cancelled')" id="filterCancelled" class="order-filter-btn">ملغية</button>
-        </div>
-        
-        <div id="ordersListContainer" style="max-height: 500px; overflow-y: auto;">
-            <!-- ستظهر الطلبات هنا -->
-        </div>
-        
-        <div style="margin-top: 30px; text-align: center;">
-            <button onclick="closeOrdersModal()" style="padding: 10px 25px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer;">إغلاق</button>
-        </div>
-    </div>
-</div>
-    <!-- Modal تفاصيل المنتج -->
-<div id="productDetailModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10003; justify-content: center; align-items: center; padding: 20px;">
-    <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 900px; border: 2px solid #c5a059; color: white; max-height: 90vh; overflow-y: auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-            <h3 id="detailProductName" style="color: #c5a059; margin: 0; font-size: 24px;"></h3>
-            <button onclick="closeProductDetail()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
-        </div>
-        
-        <div style="display: flex; flex-wrap: wrap; gap: 30px;">
-            <div style="flex: 1; min-width: 300px;">
-                <div id="detailProductImage" style="width: 100%; height: 400px; background: #2d3748; border-radius: 10px; overflow: hidden;">
-                    <!-- سيتم تعبئة الصورة هنا -->
-                </div>
+    <div id="ordersModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10002; justify-content: center; align-items: flex-start; padding-top: 50px; overflow-y: auto; font-family: 'Cairo', sans-serif;">
+        <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 1000px; border: 2px solid #c5a059; color: white; margin-bottom: 50px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="color: #c5a059; margin: 0; font-size: 24px;"><i class="fas fa-shopping-cart"></i> إدارة الطلبات</h3>
+                <button onclick="closeOrdersModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
             </div>
             
-            <div style="flex: 1; min-width: 300px;">
-                <div style="margin-bottom: 20px;">
-                    <h4 style="color: #c5a059; margin-bottom: 10px;">معلومات المنتج</h4>
-                    <div id="detailProductInfo" style="line-height: 2;">
-                        <!-- سيتم تعبئة المعلومات هنا -->
+            <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button onclick="filterOrders('all')" id="filterAll" class="order-filter-btn active">جميع الطلبات</button>
+                <button onclick="filterOrders('new')" id="filterNew" class="order-filter-btn">جديدة</button>
+                <button onclick="filterOrders('processing')" id="filterProcessing" class="order-filter-btn">قيد المعالجة</button>
+                <button onclick="filterOrders('completed')" id="filterCompleted" class="order-filter-btn">مكتملة</button>
+                <button onclick="filterOrders('cancelled')" id="filterCancelled" class="order-filter-btn">ملغية</button>
+            </div>
+            
+            <div id="ordersListContainer" style="max-height: 500px; overflow-y: auto;">
+                <!-- ستظهر الطلبات هنا -->
+            </div>
+            
+            <div style="margin-top: 30px; text-align: center;">
+                <button onclick="closeOrdersModal()" style="padding: 10px 25px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer;">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal تفاصيل المنتج -->
+    <div id="productDetailModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10003; justify-content: center; align-items: center; padding: 20px;">
+        <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 900px; border: 2px solid #c5a059; color: white; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 id="detailProductName" style="color: #c5a059; margin: 0; font-size: 24px;"></h3>
+                <button onclick="closeProductDetail()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
+            </div>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 30px;">
+                <div style="flex: 1; min-width: 300px;">
+                    <div id="detailProductImage" style="width: 100%; height: 400px; background: #2d3748; border-radius: 10px; overflow: hidden;">
+                        <!-- سيتم تعبئة الصورة هنا -->
                     </div>
                 </div>
                 
-                <div style="margin-bottom: 25px;">
-                    <h4 style="color: #c5a059; margin-bottom: 10px;">التقييمات</h4>
-                    <div id="productReviews">
-                        <!-- التقييمات ستظهر هنا -->
+                <div style="flex: 1; min-width: 300px;">
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #c5a059; margin-bottom: 10px;">معلومات المنتج</h4>
+                        <div id="detailProductInfo" style="line-height: 2;">
+                            <!-- سيتم تعبئة المعلومات هنا -->
+                        </div>
                     </div>
-                </div>
-                
-                <div style="display: flex; gap: 15px; margin-top: 30px;">
-                    <button onclick="sendOrder(currentProductDetail.name)" style="flex: 1; padding: 15px; background: #c5a059; color: #1a202c; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
-                        <i class="fab fa-whatsapp"></i> طلب عبر واتساب
-                    </button>
-                    <button onclick="closeProductDetail()" style="flex: 1; padding: 15px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                        إغلاق
-                    </button>
+                    
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #c5a059; margin-bottom: 10px;">التقييمات</h4>
+                        <div id="productReviews">
+                            <!-- التقييمات ستظهر هنا -->
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <button onclick="sendOrderFromDetail()" style="flex: 1; padding: 15px; background: #c5a059; color: #1a202c; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                            <i class="fab fa-whatsapp"></i> طلب عبر واتساب
+                        </button>
+                        <button onclick="closeProductDetail()" style="flex: 1; padding: 15px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            إغلاق
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+
     <script>
-        // WhatsApp Integration
-        function sendOrder(productName) {
-            const myNumber = "963945082925"; 
-            const userName = localStorage.getItem("alGinaUser") || "عميل جديد";
-            const message = `مرحباً متجر الغنى،%0aأنا العميل: *${userName}*%0aأريد طلب: *${productName}*%0aأرجو التواصل معي لتأكيد الطلب.`;
-            const whatsappURL = `https://wa.me/${myNumber}?text=${message}`;
-            window.open(whatsappURL, '_blank');
-        }
-
-        function submitLogin() {
-            const name = document.getElementById("userNameInput").value;
-            if (name.trim() !== "") {
-                localStorage.setItem("alGinaUser", name);
-                document.getElementById("loginOverlay").style.display = "none";
-                updateUserDisplay();
-            } else {
-                alert("من فضلك، أخبرنا باسمك أولاً.");
-            }
-        }
-
-        function updateUserDisplay() {
-            const userName = localStorage.getItem("alGinaUser");
-            if (userName) {
-                document.getElementById("userDisplay").textContent = `مرحباً ${userName}`;
-            }
-        }
-
-        function resetLogin() {
-            localStorage.removeItem("alGinaUser");
-            document.getElementById("loginOverlay").style.display = "flex";
-            document.getElementById("userNameInput").value = "";
-        }
-
-        // Check if user already logged in
-        window.addEventListener('load', function() {
-            const userName = localStorage.getItem("alGinaUser");
-            if (userName) {
-                document.getElementById("loginOverlay").style.display = "none";
-                updateUserDisplay();
-            }
-        });
-
-        // مصفوفة المنتجات بأسماء الصور الأصلية
-        const products = [
+        // ========== المتغيرات العامة ==========
+        let products = [
             { id: 1, name: "غرفة كلاسيك 058", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0058.jpg" },
             { id: 2, name: "غرفة ملكية 084", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0084.jpg" },
             { id: 3, name: "غرفة فخامة 087", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0087.jpg" },
@@ -627,6 +596,135 @@
             { id: 47, name: "جهاز 086", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0086.jpg" }
         ];
 
+        let orders = JSON.parse(localStorage.getItem('alGinaOrders')) || [];
+        let productReviews = JSON.parse(localStorage.getItem('alGinaReviews')) || {};
+        let selectedUserType = 'client';
+        let currentProductDetail = null;
+
+        // ========== نظام تسجيل الدخول ==========
+        function selectUserType(type) {
+            selectedUserType = type;
+            
+            document.getElementById('clientBtn').style.background = type === 'client' ? '#2d3748' : '#1a1a1a';
+            document.getElementById('clientBtn').style.color = type === 'client' ? 'white' : '#c5a059';
+            document.getElementById('clientBtn').style.border = type === 'client' ? '2px solid #c5a059' : '2px solid #444';
+            
+            document.getElementById('adminBtn').style.background = type === 'admin' ? '#2d3748' : '#1a1a1a';
+            document.getElementById('adminBtn').style.color = type === 'admin' ? 'white' : '#c5a059';
+            document.getElementById('adminBtn').style.border = type === 'admin' ? '2px solid #c5a059' : '2px solid #444';
+            
+            document.getElementById('clientSection').style.display = type === 'client' ? 'block' : 'none';
+            document.getElementById('adminSection').style.display = type === 'admin' ? 'block' : 'none';
+        }
+
+        function submitAdminLogin() {
+            const name = document.getElementById('adminNameInput').value;
+            const password = document.getElementById('adminPassInput').value;
+            
+            if (name.trim() === "" || password.trim() === "") {
+                alert("الرجاء إدخال اسم المسؤول وكلمة المرور");
+                return;
+            }
+            
+            if (password === "12345") {
+                localStorage.setItem("alGinaUser", name);
+                localStorage.setItem("alGinaUserType", "admin");
+                document.getElementById("loginOverlay").style.display = "none";
+                updateUserDisplay();
+                alert(`مرحباً بك مسؤول ${name}!`);
+            } else {
+                alert("كلمة المرور غير صحيحة. حاول مرة أخرى.");
+            }
+        }
+
+        function submitLogin() {
+            const name = document.getElementById("userNameInput").value;
+            if (name.trim() !== "") {
+                localStorage.setItem("alGinaUser", name);
+                localStorage.setItem("alGinaUserType", "client");
+                document.getElementById("loginOverlay").style.display = "none";
+                updateUserDisplay();
+            } else {
+                alert("من فضلك، أدخل اسمك أولاً.");
+            }
+        }
+
+        function updateUserDisplay() {
+            const userName = localStorage.getItem("alGinaUser");
+            const userType = localStorage.getItem("alGinaUserType");
+            const userDisplay = document.getElementById("userDisplay");
+            
+            if (userName) {
+                const typeIcon = userType === 'admin' ? '👑 ' : '👤 ';
+                userDisplay.innerHTML = `${typeIcon} ${userName}`;
+                userDisplay.style.color = userType === 'admin' ? '#c5a059' : '';
+                userDisplay.style.fontWeight = userType === 'admin' ? '800' : '700';
+                
+                // إزالة جميع أزرار المسؤولين السابقة
+                const adminButtons = document.querySelectorAll('.admin-btn');
+                adminButtons.forEach(btn => btn.remove());
+                
+                // إضافة أزرار المسؤولين
+                if (userType === 'admin') {
+                    // زر إضافة منتج
+                    const addButton = document.createElement('button');
+                    addButton.innerHTML = '<i class="fas fa-plus"></i> إضافة منتج';
+                    addButton.className = 'admin-btn';
+                    addButton.onclick = showAddProductModal;
+                    addButton.style.cssText = `
+                        background: #c5a059;
+                        color: #1a202c;
+                        border: none;
+                        padding: 8px 15px;
+                        border-radius: 5px;
+                        margin-right: 10px;
+                        cursor: pointer;
+                        font-weight: bold;
+                        font-family: 'Cairo', sans-serif;
+                        font-size: 14px;
+                    `;
+                    
+                    // زر الطلبات
+                    const ordersButton = document.createElement('button');
+                    ordersButton.innerHTML = '<i class="fas fa-shopping-cart"></i> الطلبات';
+                    ordersButton.className = 'admin-btn';
+                    ordersButton.onclick = showOrdersModal;
+                    ordersButton.style.cssText = `
+                        background: #2d3748;
+                        color: #c5a059;
+                        border: 1px solid #c5a059;
+                        padding: 8px 15px;
+                        border-radius: 5px;
+                        margin-right: 10px;
+                        cursor: pointer;
+                        font-weight: bold;
+                        font-family: 'Cairo', sans-serif;
+                        font-size: 14px;
+                    `;
+                    
+                    // إضافة الأزرار
+                    const userInfoDiv = document.querySelector('.user-info');
+                    userInfoDiv.parentNode.insertBefore(ordersButton, userInfoDiv);
+                    userInfoDiv.parentNode.insertBefore(addButton, userInfoDiv);
+                }
+            } else {
+                userDisplay.textContent = 'مرحباً';
+                userDisplay.style.color = '';
+                userDisplay.style.fontWeight = '700';
+            }
+        }
+
+        function resetLogin() {
+            localStorage.removeItem("alGinaUser");
+            localStorage.removeItem("alGinaUserType");
+            document.getElementById("loginOverlay").style.display = "flex";
+            document.getElementById("userNameInput").value = "";
+            document.getElementById("adminNameInput").value = "";
+            document.getElementById("adminPassInput").value = "";
+            selectUserType('client');
+        }
+
+        // ========== نظام المنتجات الأساسي ==========
         function renderItems(items) {
             const container = document.getElementById('products-container');
             if (items.length === 0) {
@@ -634,13 +732,16 @@
                 return;
             }
             container.innerHTML = items.map(p => `
-                <div class="product-card">
+                <div class="product-card" onclick="showProductDetail(${p.id})">
                     <div class="product-image-container">
                         <img src="${p.img}" class="product-image" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x250?text=Image+Not+Found'">
                     </div>
                     <div class="product-info">
                         <h3>${p.name}</h3>
-                        <button class="btn-contact" onclick="sendOrder('${p.name}')">طلب عبر واتساب</button>
+                        <div style="margin: 10px 0; color: #c5a059;">
+                            <i class="fas fa-star"></i> ${getProductRating(p.id).toFixed(1)}
+                        </div>
+                        <button class="btn-contact" onclick="event.stopPropagation(); sendOrder('${p.name}')">طلب عبر واتساب</button>
                     </div>
                 </div>
             `).join('');
@@ -658,6 +759,10 @@
                 filtered = products;
             } else if (cat === 'bedroom') {
                 filtered = products.filter(p => p.category === 'bedroom');
+            } else if (cat === 'sofas') {
+                filtered = products.filter(p => p.category === 'sofas');
+            } else if (cat === 'electronics') {
+                filtered = products.filter(p => p.category === 'electronics');
             }
             renderItems(filtered);
         }
@@ -673,623 +778,401 @@
             renderItems(filtered);
         }
 
-        window.onload = () => renderItems(products);
-        // نظام تسجيل الدخول المزدوج
-let selectedUserType = 'client';
+        // ========== نظام إضافة المنتجات ==========
+        function showAddProductModal() {
+            const userType = localStorage.getItem("alGinaUserType");
+            if (userType !== "admin") {
+                alert("هذه الميزة متاحة فقط للمسؤولين!");
+                return;
+            }
+            document.getElementById("addProductModal").style.display = "flex";
+        }
 
-function selectUserType(type) {
-    selectedUserType = type;
-    
-    // تحديث الأزرار
-    document.getElementById('clientBtn').style.background = type === 'client' ? '#2d3748' : '#1a1a1a';
-    document.getElementById('clientBtn').style.color = type === 'client' ? 'white' : '#c5a059';
-    document.getElementById('clientBtn').style.border = type === 'client' ? '2px solid #c5a059' : '2px solid #444';
-    
-    document.getElementById('adminBtn').style.background = type === 'admin' ? '#2d3748' : '#1a1a1a';
-    document.getElementById('adminBtn').style.color = type === 'admin' ? 'white' : '#c5a059';
-    document.getElementById('adminBtn').style.border = type === 'admin' ? '2px solid #c5a059' : '2px solid #444';
-    
-    // إظهار/إخفاء الأقسام
-    document.getElementById('clientSection').style.display = type === 'client' ? 'block' : 'none';
-    document.getElementById('adminSection').style.display = type === 'admin' ? 'block' : 'none';
-}
+        function closeAddProductModal() {
+            document.getElementById("addProductModal").style.display = "none";
+            document.getElementById("addProductForm").reset();
+        }
 
-function submitAdminLogin() {
-    const name = document.getElementById('adminNameInput').value;
-    const password = document.getElementById('adminPassInput').value;
-    
-    if (name.trim() === "" || password.trim() === "") {
-        alert("الرجاء إدخال اسم المسؤول وكلمة المرور");
-        return;
-    }
-    
-    if (password === "12345") {
-        localStorage.setItem("alGinaUser", name);
-        localStorage.setItem("alGinaUserType", "admin");
-        document.getElementById("loginOverlay").style.display = "none";
-        updateUserDisplay();
-        alert(`مرحباً بك مسؤول ${name}!`);
-    } else {
-        alert("كلمة المرور غير صحيحة. حاول مرة أخرى.");
-    }
-}
+        function addNewProduct(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById("newProductName").value;
+            const category = document.getElementById("newProductCategory").value;
+            const sub = document.getElementById("newProductSub").value;
+            const img = document.getElementById("newProductImage").value;
+            
+            if (!name || !category || !sub || !img) {
+                alert("يرجى ملء جميع الحقول!");
+                return;
+            }
+            
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            
+            const newProduct = {
+                id: newId,
+                name: name,
+                category: category,
+                sub: sub,
+                img: img
+            };
+            
+            products.push(newProduct);
+            saveProductsToLocalStorage();
+            renderItems(products);
+            closeAddProductModal();
+            alert(`تم إضافة المنتج "${name}" بنجاح!`);
+        }
 
-function submitLogin() {
-    const name = document.getElementById("userNameInput").value;
-    if (name.trim() !== "") {
-        localStorage.setItem("alGinaUser", name);
-        localStorage.setItem("alGinaUserType", "client");
-        document.getElementById("loginOverlay").style.display = "none";
-        updateUserDisplay();
-    } else {
-        alert("من فضلك، أدخل اسمك أولاً.");
-    }
-}
+        function saveProductsToLocalStorage() {
+            try {
+                localStorage.setItem("alGinaProducts", JSON.stringify(products));
+            } catch (e) {
+                console.error("Error saving products:", e);
+            }
+        }
 
-function updateUserDisplay() {
-    const userName = localStorage.getItem("alGinaUser");
-    const userType = localStorage.getItem("alGinaUserType");
-    if (userName) {
-        const typeIcon = userType === 'admin' ? '👑 ' : '👤 ';
-        document.getElementById("userDisplay").innerHTML = `${typeIcon} ${userName}`;
-        document.getElementById("userDisplay").style.color = userType === 'admin' ? '#c5a059' : '';
-        document.getElementById("userDisplay").style.fontWeight = userType === 'admin' ? '800' : '700';
-    }
-}
-
-function resetLogin() {
-    localStorage.removeItem("alGinaUser");
-    localStorage.removeItem("alGinaUserType");
-    document.getElementById("loginOverlay").style.display = "flex";
-    document.getElementById("userNameInput").value = "";
-    document.getElementById("adminNameInput").value = "";
-    document.getElementById("adminPassInput").value = "";
-    selectUserType('client');
-}
-
-// التحقق من حالة تسجيل الدخول عند التحميل
-window.addEventListener('load', function() {
-    const userName = localStorage.getItem("alGinaUser");
-    if (userName) {
-        document.getElementById("loginOverlay").style.display = "none";
-        updateUserDisplay();
-    } else {
-        selectUserType('client');
-    }
-});
-        // نظام إضافة المنتجات (للمسؤولين فقط)
-function showAddProductModal() {
-    const userType = localStorage.getItem("alGinaUserType");
-    if (userType !== "admin") {
-        alert("هذه الميزة متاحة فقط للمسؤولين!");
-        return;
-    }
-    document.getElementById("addProductModal").style.display = "flex";
-}
-
-function closeAddProductModal() {
-    document.getElementById("addProductModal").style.display = "none";
-    document.getElementById("addProductForm").reset();
-}
-
-function addNewProduct(event) {
-    event.preventDefault();
-    
-    const name = document.getElementById("newProductName").value;
-    const category = document.getElementById("newProductCategory").value;
-    const sub = document.getElementById("newProductSub").value;
-    const img = document.getElementById("newProductImage").value;
-    
-    if (!name || !category || !sub || !img) {
-        alert("يرجى ملء جميع الحقول!");
-        return;
-    }
-    
-    // إنشاء معرف جديد للمنتج
-    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-    
-    // إضافة المنتج الجديد
-    const newProduct = {
-        id: newId,
-        name: name,
-        category: category,
-        sub: sub,
-        img: img
-    };
-    
-    products.push(newProduct);
-    
-    // حفظ في localStorage ليتم استرجاعه عند تحديث الصفحة
-    saveProductsToLocalStorage();
-    
-    // تحديث العرض
-    renderItems(products);
-    
-    // إغلاق المودال وإعادة الضبط
-    closeAddProductModal();
-    
-    alert(`تم إضافة المنتج "${name}" بنجاح!`);
-}
-
-function saveProductsToLocalStorage() {
-    try {
-        localStorage.setItem("alGinaProducts", JSON.stringify(products));
-    } catch (e) {
-        console.error("Error saving products:", e);
-    }
-}
-
-function loadProductsFromLocalStorage() {
-    try {
-        const savedProducts = localStorage.getItem("alGinaProducts");
-        if (savedProducts) {
-            const parsedProducts = JSON.parse(savedProducts);
-            // دمج المنتجات المحفوظة مع المنتجات الأصلية (تجنب التكرار)
-            const existingIds = products.map(p => p.id);
-            parsedProducts.forEach(product => {
-                if (!existingIds.includes(product.id)) {
-                    products.push(product);
+        function loadProductsFromLocalStorage() {
+            try {
+                const savedProducts = localStorage.getItem("alGinaProducts");
+                if (savedProducts) {
+                    const parsedProducts = JSON.parse(savedProducts);
+                    const existingIds = products.map(p => p.id);
+                    parsedProducts.forEach(product => {
+                        if (!existingIds.includes(product.id)) {
+                            products.push(product);
+                        }
+                    });
                 }
-            });
+            } catch (e) {
+                console.error("Error loading products:", e);
+            }
         }
-    } catch (e) {
-        console.error("Error loading products:", e);
-    }
-}
 
-// تعديل دالة updateUserDisplay لإضافة زر إضافة المنتجات للمسؤولين
-function updateUserDisplay() {
-    const userName = localStorage.getItem("alGinaUser");
-    const userType = localStorage.getItem("alGinaUserType");
-    const userDisplay = document.getElementById("userDisplay");
-    
-    if (userName) {
-        const typeIcon = userType === 'admin' ? '👑 ' : '👤 ';
-        userDisplay.innerHTML = `${typeIcon} ${userName}`;
-        userDisplay.style.color = userType === 'admin' ? '#c5a059' : '';
-        userDisplay.style.fontWeight = userType === 'admin' ? '800' : '700';
-        
-        // إضافة زر إضافة منتج للمسؤولين
-        if (userType === 'admin') {
-            // إزالة الزر السابق إذا موجود
-            const oldButton = document.querySelector('.admin-add-btn');
-            if (oldButton) oldButton.remove();
-            
-            // إنشاء زر جديد
-            const addButton = document.createElement('button');
-            addButton.innerHTML = '<i class="fas fa-plus"></i> إضافة منتج';
-            addButton.className = 'admin-add-btn';
-            addButton.onclick = showAddProductModal;
-            addButton.style.cssText = `
-                background: #c5a059;
-                color: #1a202c;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 5px;
-                margin-right: 15px;
-                cursor: pointer;
-                font-weight: bold;
-                font-family: 'Cairo', sans-serif;
-                font-size: 14px;
-            `;
-            
-            // إضافة الزر بجوار معلومات المستخدم
-            const userInfoDiv = document.querySelector('.user-info');
-            userInfoDiv.parentNode.insertBefore(addButton, userInfoDiv);
-        } else {
-            // إزالة الزر إذا كان المستخدم ليس مسؤولاً
-            const adminButton = document.querySelector('.admin-add-btn');
-            if (adminButton) adminButton.remove();
+        // ========== نظام الطلبات ==========
+        function showOrdersModal() {
+            const userType = localStorage.getItem("alGinaUserType");
+            if (userType !== "admin") {
+                alert("هذه الميزة متاحة فقط للمسؤولين!");
+                return;
+            }
+            document.getElementById("ordersModal").style.display = "flex";
+            renderOrders('all');
         }
-    }
-}
 
-// تحميل المنتجات المحفوظة عند بدء التشغيل
-window.addEventListener('load', function() {
-    const userName = localStorage.getItem("alGinaUser");
-    if (userName) {
-        document.getElementById("loginOverlay").style.display = "none";
-        updateUserDisplay();
-    }
-    loadProductsFromLocalStorage();
-    renderItems(products);
-});
-        // نظام إدارة الطلبات
-let orders = JSON.parse(localStorage.getItem('alGinaOrders')) || [];
-
-function showOrdersModal() {
-    const userType = localStorage.getItem("alGinaUserType");
-    if (userType !== "admin") {
-        alert("هذه الميزة متاحة فقط للمسؤولين!");
-        return;
-    }
-    document.getElementById("ordersModal").style.display = "flex";
-    renderOrders('all');
-}
-
-function closeOrdersModal() {
-    document.getElementById("ordersModal").style.display = "none";
-}
-
-function filterOrders(status) {
-    // تحديث أزرار الفلتر
-    document.querySelectorAll('.order-filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    renderOrders(status);
-}
-
-function renderOrders(filter = 'all') {
-    const container = document.getElementById('ordersListContainer');
-    
-    let filteredOrders = orders;
-    if (filter !== 'all') {
-        filteredOrders = orders.filter(order => order.status === filter);
-    }
-    
-    if (filteredOrders.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #a0aec0;">لا توجد طلبات</div>';
-        return;
-    }
-    
-    container.innerHTML = filteredOrders.map((order, index) => `
-        <div class="order-card">
-            <div class="order-header">
-                <div>
-                    <strong style="color: #c5a059;">طلب #${order.id}</strong>
-                    <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">
-                        ${order.date} | ${order.time}
-                    </div>
-                </div>
-                <div class="order-status status-${order.status}">
-                    ${getStatusText(order.status)}
-                </div>
-            </div>
-            
-            <div style="margin-bottom: 10px;">
-                <strong>العميل:</strong> ${order.customer}
-            </div>
-            
-            <div style="margin-bottom: 10px;">
-                <strong>المنتج:</strong> ${order.product}
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-                <strong>ملاحظات:</strong> ${order.notes || 'لا توجد ملاحظات'}
-            </div>
-            
-            <div class="order-actions">
-                ${order.status === 'new' ? `
-                    <button class="order-action-btn" style="background: #d69e2e; color: white;" onclick="updateOrderStatus(${order.id}, 'processing')">
-                        بدء المعالجة
-                    </button>
-                    <button class="order-action-btn" style="background: #38a169; color: white;" onclick="updateOrderStatus(${order.id}, 'completed')">
-                        إكمال الطلب
-                    </button>
-                    <button class="order-action-btn" style="background: #e53e3e; color: white;" onclick="updateOrderStatus(${order.id}, 'cancelled')">
-                        إلغاء الطلب
-                    </button>
-                ` : ''}
-                
-                ${order.status === 'processing' ? `
-                    <button class="order-action-btn" style="background: #38a169; color: white;" onclick="updateOrderStatus(${order.id}, 'completed')">
-                        إكمال الطلب
-                    </button>
-                    <button class="order-action-btn" style="background: #e53e3e; color: white;" onclick="updateOrderStatus(${order.id}, 'cancelled')">
-                        إلغاء الطلب
-                    </button>
-                ` : ''}
-                
-                <button class="order-action-btn" style="background: #4a5568; color: white;" onclick="deleteOrder(${order.id})">
-                    حذف الطلب
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function getStatusText(status) {
-    const statusMap = {
-        'new': 'جديدة',
-        'processing': 'قيد المعالجة',
-        'completed': 'مكتملة',
-        'cancelled': 'ملغية'
-    };
-    return statusMap[status] || status;
-}
-
-function updateOrderStatus(orderId, newStatus) {
-    const orderIndex = orders.findIndex(o => o.id === orderId);
-    if (orderIndex !== -1) {
-        orders[orderIndex].status = newStatus;
-        localStorage.setItem('alGinaOrders', JSON.stringify(orders));
-        renderOrders(document.querySelector('.order-filter-btn.active').getAttribute('onclick').replace("filterOrders('", "").replace("')", ""));
-        alert('تم تحديث حالة الطلب بنجاح');
-    }
-}
-
-function deleteOrder(orderId) {
-    if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
-        orders = orders.filter(o => o.id !== orderId);
-        localStorage.setItem('alGinaOrders', JSON.stringify(orders));
-        renderOrders(document.querySelector('.order-filter-btn.active').getAttribute('onclick').replace("filterOrders('", "").replace("')", ""));
-    }
-}
-
-// تعديل دالة sendOrder لحفظ الطلبات
-function sendOrder(productName) {
-    const myNumber = "963945082925"; 
-    const userName = localStorage.getItem("alGinaUser") || "عميل جديد";
-    const userType = localStorage.getItem("alGinaUserType");
-    const message = `مرحباً متجر الغنى،%0aأنا ${userType === 'admin' ? 'المسؤول' : 'العميل'}: *${userName}*%0aأريد طلب: *${productName}*%0aأرجو التواصل معي لتأكيد الطلب.`;
-    const whatsappURL = `https://wa.me/${myNumber}?text=${message}`;
-    
-    // حفظ الطلب في النظام
-    const newOrder = {
-        id: orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1,
-        customer: userName,
-        product: productName,
-        date: new Date().toLocaleDateString('ar-SA'),
-        time: new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'}),
-        status: 'new',
-        notes: ''
-    };
-    
-    orders.push(newOrder);
-    localStorage.setItem('alGinaOrders', JSON.stringify(orders));
-    
-    // فتح واتساب
-    window.open(whatsappURL, '_blank');
-    
-    // إشعار للمسؤول إذا لم يكن هو من أضاف الطلب
-    if (userType !== 'admin') {
-        alert('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.');
-    }
-}
-
-// تعديل دالة updateUserDisplay لإضافة زر الطلبات للمسؤولين
-function updateUserDisplay() {
-    const userName = localStorage.getItem("alGinaUser");
-    const userType = localStorage.getItem("alGinaUserType");
-    const userDisplay = document.getElementById("userDisplay");
-    
-    if (userName) {
-        const typeIcon = userType === 'admin' ? '👑 ' : '👤 ';
-        userDisplay.innerHTML = `${typeIcon} ${userName}`;
-        userDisplay.style.color = userType === 'admin' ? '#c5a059' : '';
-        userDisplay.style.fontWeight = userType === 'admin' ? '800' : '700';
-        
-        // إضافة أزرار المسؤولين
-        if (userType === 'admin') {
-            // إزالة الأزرار السابقة إذا موجودة
-            const oldButtons = document.querySelectorAll('.admin-btn');
-            oldButtons.forEach(btn => btn.remove());
-            
-            // زر إضافة منتج
-            const addButton = document.createElement('button');
-            addButton.innerHTML = '<i class="fas fa-plus"></i> إضافة منتج';
-            addButton.className = 'admin-btn admin-add-btn';
-            addButton.onclick = showAddProductModal;
-            addButton.style.cssText = `
-                background: #c5a059;
-                color: #1a202c;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 5px;
-                margin-right: 10px;
-                cursor: pointer;
-                font-weight: bold;
-                font-family: 'Cairo', sans-serif;
-                font-size: 14px;
-            `;
-            
-            // زر الطلبات
-            const ordersButton = document.createElement('button');
-            ordersButton.innerHTML = '<i class="fas fa-shopping-cart"></i> الطلبات';
-            ordersButton.className = 'admin-btn admin-orders-btn';
-            ordersButton.onclick = showOrdersModal;
-            ordersButton.style.cssText = `
-                background: #2d3748;
-                color: #c5a059;
-                border: 1px solid #c5a059;
-                padding: 8px 15px;
-                border-radius: 5px;
-                margin-right: 10px;
-                cursor: pointer;
-                font-weight: bold;
-                font-family: 'Cairo', sans-serif;
-                font-size: 14px;
-            `;
-            
-            // إضافة الأزرار بجوار معلومات المستخدم
-            const userInfoDiv = document.querySelector('.user-info');
-            userInfoDiv.parentNode.insertBefore(ordersButton, userInfoDiv);
-            userInfoDiv.parentNode.insertBefore(addButton, userInfoDiv);
-        } else {
-            // إزالة الأزرار إذا كان المستخدم ليس مسؤولاً
-            const adminButtons = document.querySelectorAll('.admin-btn');
-            adminButtons.forEach(btn => btn.remove());
+        function closeOrdersModal() {
+            document.getElementById("ordersModal").style.display = "none";
         }
-    }
-}
-        // صفحة تفاصيل المنتج
-let currentProductDetail = null;
-let productReviews = JSON.parse(localStorage.getItem('alGinaReviews')) || {};
 
-function showProductDetail(product) {
-    currentProductDetail = product;
-    
-    // تحديث العنوان
-    document.getElementById('detailProductName').textContent = product.name;
-    
-    // تحديث الصورة
-    const imageContainer = document.getElementById('detailProductImage');
-    imageContainer.innerHTML = `<img src="${product.img}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/600x400?text=صورة+غير+متوفرة'">`;
-    
-    // تحديث المعلومات
-    const categoryMap = {
-        'bedroom': 'غرف النوم',
-        'sofas': 'الكنبات',
-        'electronics': 'إلكترونيات'
-    };
-    
-    const subMap = {
-        'open': 'أبواب فتح',
-        'slide': 'أبواب سحاب',
-        'both': 'فتح وغلق'
-    };
-    
-    document.getElementById('detailProductInfo').innerHTML = `
-        <div><strong>الفئة:</strong> ${categoryMap[product.category] || product.category}</div>
-        <div><strong>النوع:</strong> ${subMap[product.sub] || product.sub}</div>
-        <div><strong>الرقم التسلسلي:</strong> ${product.id}</div>
-        <div style="margin-top: 15px; color: #c5a059; font-weight: bold;">
-            <i class="fas fa-star"></i> ${getProductRating(product.id).toFixed(1)}/5
-            <span style="color: #a0aec0; font-weight: normal; margin-right: 10px;">
-                (${getReviewCount(product.id)} تقييم)
-            </span>
-        </div>
-    `;
-    
-    // عرض التقييمات
-    displayProductReviews(product.id);
-    
-    // عرض المودال
-    document.getElementById('productDetailModal').style.display = 'flex';
-}
+        function filterOrders(status) {
+            document.querySelectorAll('.order-filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderOrders(status);
+        }
 
-function closeProductDetail() {
-    document.getElementById('productDetailModal').style.display = 'none';
-    currentProductDetail = null;
-}
-
-// تعديل دالة renderItems لجعل المنتجات قابلة للنقر
-function renderItems(items) {
-    const container = document.getElementById('products-container');
-    if (items.length === 0) {
-        container.innerHTML = '<div class="no-products">عذراً، لا توجد منتجات في هذا القسم حالياً.</div>';
-        return;
-    }
-    container.innerHTML = items.map(p => `
-        <div class="product-card" onclick="showProductDetail(${JSON.stringify(p).replace(/"/g, '&quot;')})" style="cursor: pointer;">
-            <div class="product-image-container">
-                <img src="${p.img}" class="product-image" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x250?text=Image+Not+Found'">
-            </div>
-            <div class="product-info">
-                <h3>${p.name}</h3>
-                <div style="margin: 10px 0; color: #c5a059;">
-                    <i class="fas fa-star"></i> ${getProductRating(p.id).toFixed(1)}
-                </div>
-                <button class="btn-contact" onclick="event.stopPropagation(); sendOrder('${p.name}')">طلب عبر واتساب</button>
-            </div>
-        </div>
-    `).join('');
-}
-        // نظام التقييمات البسيط
-let productReviews = JSON.parse(localStorage.getItem('alGinaReviews')) || {};
-
-function getProductRating(productId) {
-    if (!productReviews[productId] || productReviews[productId].length === 0) {
-        return 5.0; // التقييم الافتراضي
-    }
-    
-    const reviews = productReviews[productId];
-    const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-    return total / reviews.length;
-}
-
-function displayProductReviews(productId) {
-    const container = document.getElementById('productReviewsSection');
-    
-    if (!productReviews[productId] || productReviews[productId].length === 0) {
-        container.innerHTML = `
-            <div style="background: #2d3748; padding: 20px; border-radius: 10px;">
-                <h4 style="color: #c5a059; margin-bottom: 15px;">التقييمات</h4>
-                <div style="text-align: center; color: #a0aec0; padding: 20px;">
-                    لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!
-                </div>
-                <div style="text-align: center; margin-top: 15px;">
-                    <button onclick="addReview(${productId})" style="padding: 10px 20px; background: #c5a059; color: #1a202c; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                        <i class="fas fa-star"></i> أضف تقييمك
-                    </button>
-                </div>
-            </div>
-        `;
-        return;
-    }
-    
-    const reviews = productReviews[productId];
-    container.innerHTML = `
-        <div style="background: #2d3748; padding: 20px; border-radius: 10px;">
-            <h4 style="color: #c5a059; margin-bottom: 15px;">التقييمات (${reviews.length})</h4>
+        function renderOrders(filter = 'all') {
+            const container = document.getElementById('ordersListContainer');
             
-            <div style="margin-bottom: 20px; color: #d69e2e; font-size: 18px;">
-                ${'★'.repeat(Math.round(getProductRating(productId)))}${'☆'.repeat(5 - Math.round(getProductRating(productId)))}
-                <span style="color: white; margin-right: 10px;">${getProductRating(productId).toFixed(1)}/5</span>
-            </div>
+            let filteredOrders = orders;
+            if (filter !== 'all') {
+                filteredOrders = orders.filter(order => order.status === filter);
+            }
             
-            <div style="max-height: 300px; overflow-y: auto;">
-                ${reviews.map((review, index) => `
-                    <div style="padding: 15px; border-bottom: 1px solid #4a5568; ${index === reviews.length - 1 ? 'border-bottom: none;' : ''}">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <strong style="color: #c5a059;">${review.reviewer}</strong>
-                            <div style="color: #d69e2e;">
-                                ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+            if (filteredOrders.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #a0aec0;">لا توجد طلبات</div>';
+                return;
+            }
+            
+            container.innerHTML = filteredOrders.map((order, index) => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <strong style="color: #c5a059;">طلب #${order.id}</strong>
+                            <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">
+                                ${order.date} | ${order.time}
                             </div>
                         </div>
-                        <div>${review.comment}</div>
-                        <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">
-                            ${review.date}
+                        <div class="order-status status-${order.status}">
+                            ${getStatusText(order.status)}
                         </div>
                     </div>
-                `).join('')}
-            </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button onclick="addReview(${productId})" style="padding: 10px 20px; background: #2d3748; color: #c5a059; border: 1px solid #c5a059; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                    <i class="fas fa-plus"></i> أضف تقييمك
-                </button>
-            </div>
-        </div>
-    `;
-}
+                    
+                    <div style="margin-bottom: 10px;">
+                        <strong>العميل:</strong> ${order.customer}
+                    </div>
+                    
+                    <div style="margin-bottom: 10px;">
+                        <strong>المنتج:</strong> ${order.product}
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>ملاحظات:</strong> ${order.notes || 'لا توجد ملاحظات'}
+                    </div>
+                    
+                    <div class="order-actions">
+                        ${order.status === 'new' ? `
+                            <button class="order-action-btn" style="background: #d69e2e; color: white;" onclick="updateOrderStatus(${order.id}, 'processing')">
+                                بدء المعالجة
+                            </button>
+                            <button class="order-action-btn" style="background: #38a169; color: white;" onclick="updateOrderStatus(${order.id}, 'completed')">
+                                إكمال الطلب
+                            </button>
+                            <button class="order-action-btn" style="background: #e53e3e; color: white;" onclick="updateOrderStatus(${order.id}, 'cancelled')">
+                                إلغاء الطلب
+                            </button>
+                        ` : ''}
+                        
+                        ${order.status === 'processing' ? `
+                            <button class="order-action-btn" style="background: #38a169; color: white;" onclick="updateOrderStatus(${order.id}, 'completed')">
+                                إكمال الطلب
+                            </button>
+                            <button class="order-action-btn" style="background: #e53e3e; color: white;" onclick="updateOrderStatus(${order.id}, 'cancelled')">
+                                إلغاء الطلب
+                            </button>
+                        ` : ''}
+                        
+                        <button class="order-action-btn" style="background: #4a5568; color: white;" onclick="deleteOrder(${order.id})">
+                            حذف الطلب
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-function addReview(productId) {
-    const userName = localStorage.getItem("alGinaUser") || "زائر";
-    
-    const rating = prompt(`تقيمك للمنتج (من 1 إلى 5 نجوم):\nأدخل رقم من 1 إلى 5`, "5");
-    
-    if (!rating) return;
-    
-    const ratingNum = parseInt(rating);
-    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-        alert("الرجاء إدخال رقم بين 1 و 5");
-        return;
-    }
-    
-    const comment = prompt("أضف تعليقك (اختياري):", "منتج ممتاز!");
-    
-    if (!productReviews[productId]) {
-        productReviews[productId] = [];
-    }
-    
-    const newReview = {
-        reviewer: userName,
-        rating: ratingNum,
-        comment: comment || "لا يوجد تعليق",
-        date: new Date().toLocaleDateString('ar-SA')
-    };
-    
-    productReviews[productId].push(newReview);
-    localStorage.setItem('alGinaReviews', JSON.stringify(productReviews));
-    
-    // تحديث العرض إذا كان المنتج مفتوحاً
-    if (currentProductDetail && currentProductDetail.id === productId) {
-        displayProductReviews(productId);
-    }
-    
-    alert("شكراً لتقييمك!");
-}
+        function getStatusText(status) {
+            const statusMap = {
+                'new': 'جديدة',
+                'processing': 'قيد المعالجة',
+                'completed': 'مكتملة',
+                'cancelled': 'ملغية'
+            };
+            return statusMap[status] || status;
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const orderIndex = orders.findIndex(o => o.id === orderId);
+            if (orderIndex !== -1) {
+                orders[orderIndex].status = newStatus;
+                localStorage.setItem('alGinaOrders', JSON.stringify(orders));
+                const currentFilter = document.querySelector('.order-filter-btn.active').getAttribute('onclick').replace("filterOrders('", "").replace("')", "");
+                renderOrders(currentFilter);
+                alert('تم تحديث حالة الطلب بنجاح');
+            }
+        }
+
+        function deleteOrder(orderId) {
+            if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+                orders = orders.filter(o => o.id !== orderId);
+                localStorage.setItem('alGinaOrders', JSON.stringify(orders));
+                const currentFilter = document.querySelector('.order-filter-btn.active').getAttribute('onclick').replace("filterOrders('", "").replace("')", "");
+                renderOrders(currentFilter);
+            }
+        }
+
+        // ========== نظام واتساب والطلبات ==========
+        function sendOrder(productName) {
+            const myNumber = "963945082925"; 
+            const userName = localStorage.getItem("alGinaUser") || "عميل جديد";
+            const userType = localStorage.getItem("alGinaUserType");
+            const message = `مرحباً متجر الغنى،%0aأنا ${userType === 'admin' ? 'المسؤول' : 'العميل'}: *${userName}*%0aأريد طلب: *${productName}*%0aأرجو التواصل معي لتأكيد الطلب.`;
+            const whatsappURL = `https://wa.me/${myNumber}?text=${message}`;
+            
+            const newOrder = {
+                id: orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1,
+                customer: userName,
+                product: productName,
+                date: new Date().toLocaleDateString('ar-SA'),
+                time: new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'}),
+                status: 'new',
+                notes: ''
+            };
+            
+            orders.push(newOrder);
+            localStorage.setItem('alGinaOrders', JSON.stringify(orders));
+            window.open(whatsappURL, '_blank');
+            
+            if (userType !== 'admin') {
+                alert('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.');
+            }
+        }
+
+        function sendOrderFromDetail() {
+            if (currentProductDetail) {
+                sendOrder(currentProductDetail.name);
+            }
+        }
+
+        // ========== نظام تفاصيل المنتج ==========
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            currentProductDetail = product;
+            
+            document.getElementById('detailProductName').textContent = product.name;
+            
+            const imageContainer = document.getElementById('detailProductImage');
+            imageContainer.innerHTML = `<img src="${product.img}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/600x400?text=صورة+غير+متوفرة'">`;
+            
+            const categoryMap = {
+                'bedroom': 'غرف النوم',
+                'sofas': 'الكنبات',
+                'electronics': 'إلكترونيات'
+            };
+            
+            const subMap = {
+                'open': 'أبواب فتح',
+                'slide': 'أبواب سحاب',
+                'both': 'فتح وغلق'
+            };
+            
+            document.getElementById('detailProductInfo').innerHTML = `
+                <div><strong>الفئة:</strong> ${categoryMap[product.category] || product.category}</div>
+                <div><strong>النوع:</strong> ${subMap[product.sub] || product.sub}</div>
+                <div><strong>الرقم التسلسلي:</strong> ${product.id}</div>
+                <div style="margin-top: 15px; color: #c5a059; font-weight: bold;">
+                    <i class="fas fa-star"></i> ${getProductRating(product.id).toFixed(1)}/5
+                    <span style="color: #a0aec0; font-weight: normal; margin-right: 10px;">
+                        (${getReviewCount(product.id)} تقييم)
+                    </span>
+                </div>
+            `;
+            
+            displayProductReviews(product.id);
+            document.getElementById('productDetailModal').style.display = 'flex';
+        }
+
+        function closeProductDetail() {
+            document.getElementById('productDetailModal').style.display = 'none';
+            currentProductDetail = null;
+        }
+
+        // ========== نظام التقييمات ==========
+        function getProductRating(productId) {
+            if (!productReviews[productId] || productReviews[productId].length === 0) {
+                return 5.0;
+            }
+            
+            const reviews = productReviews[productId];
+            const total = reviews.reduce((sum, review) => sum + review.rating, 0);
+            return total / reviews.length;
+        }
+
+        function getReviewCount(productId) {
+            if (!productReviews[productId]) {
+                return 0;
+            }
+            return productReviews[productId].length;
+        }
+
+        function displayProductReviews(productId) {
+            const container = document.getElementById('productReviews');
+            
+            if (!productReviews[productId] || productReviews[productId].length === 0) {
+                container.innerHTML = `
+                    <div style="background: #2d3748; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #c5a059; margin-bottom: 15px;">التقييمات</h4>
+                        <div style="text-align: center; color: #a0aec0; padding: 20px;">
+                            لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!
+                        </div>
+                        <div style="text-align: center; margin-top: 15px;">
+                            <button onclick="addReview(${productId})" style="padding: 10px 20px; background: #c5a059; color: #1a202c; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                                <i class="fas fa-star"></i> أضف تقييمك
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const reviews = productReviews[productId];
+            container.innerHTML = `
+                <div style="background: #2d3748; padding: 20px; border-radius: 10px;">
+                    <h4 style="color: #c5a059; margin-bottom: 15px;">التقييمات (${reviews.length})</h4>
+                    
+                    <div style="margin-bottom: 20px; color: #d69e2e; font-size: 18px;">
+                        ${'★'.repeat(Math.round(getProductRating(productId)))}${'☆'.repeat(5 - Math.round(getProductRating(productId)))}
+                        <span style="color: white; margin-right: 10px;">${getProductRating(productId).toFixed(1)}/5</span>
+                    </div>
+                    
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        ${reviews.map((review, index) => `
+                            <div style="padding: 15px; border-bottom: 1px solid #4a5568; ${index === reviews.length - 1 ? 'border-bottom: none;' : ''}">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                    <strong style="color: #c5a059;">${review.reviewer}</strong>
+                                    <div style="color: #d69e2e;">
+                                        ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                                    </div>
+                                </div>
+                                <div>${review.comment}</div>
+                                <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">
+                                    ${review.date}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="addReview(${productId})" style="padding: 10px 20px; background: #2d3748; color: #c5a059; border: 1px solid #c5a059; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                            <i class="fas fa-plus"></i> أضف تقييمك
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addReview(productId) {
+            const userName = localStorage.getItem("alGinaUser") || "زائر";
+            
+            const rating = prompt(`تقيمك للمنتج (من 1 إلى 5 نجوم):\nأدخل رقم من 1 إلى 5`, "5");
+            
+            if (!rating) return;
+            
+            const ratingNum = parseInt(rating);
+            if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+                alert("الرجاء إدخال رقم بين 1 و 5");
+                return;
+            }
+            
+            const comment = prompt("أضف تعليقك (اختياري):", "منتج ممتاز!");
+            
+            if (!productReviews[productId]) {
+                productReviews[productId] = [];
+            }
+            
+            const newReview = {
+                reviewer: userName,
+                rating: ratingNum,
+                comment: comment || "لا يوجد تعليق",
+                date: new Date().toLocaleDateString('ar-SA')
+            };
+            
+            productReviews[productId].push(newReview);
+            localStorage.setItem('alGinaReviews', JSON.stringify(productReviews));
+            
+            if (currentProductDetail && currentProductDetail.id === productId) {
+                displayProductReviews(productId);
+            }
+            
+            alert("شكراً لتقييمك!");
+        }
+
+        // ========== تهيئة التطبيق ==========
+        function initializeApp() {
+            const userName = localStorage.getItem("alGinaUser");
+            
+            if (userName) {
+                document.getElementById("loginOverlay").style.display = "none";
+                updateUserDisplay();
+            } else {
+                selectUserType('client');
+            }
+            
+            loadProductsFromLocalStorage();
+            renderItems(products);
+        }
+
+        // بدء التشغيل
+        window.addEventListener('load', initializeApp);
     </script>
 </body>
 </html>
