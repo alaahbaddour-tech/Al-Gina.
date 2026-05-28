@@ -6,6 +6,10 @@
     <title>متجر الغنى - AL GINA Luxury Furniture</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     
     <style>
         :root {
@@ -36,7 +40,6 @@
             padding: 0 20px;
         }
 
-        /* Header */
         header {
             background: #ffffff;
             padding: 15px 0;
@@ -49,6 +52,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo {
@@ -67,17 +72,42 @@
             font-weight: 700;
             cursor: pointer;
             transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .user-info:hover {
             color: #1a202c;
         }
 
-        /* Hero Section */
+        .admin-btn {
+            background: #c5a059;
+            color: #1a202c;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .admin-btn:hover {
+            background: #b38f40;
+            transform: scale(1.02);
+        }
+
+        .admin-btn-outline {
+            background: #2d3748;
+            color: #c5a059;
+            border: 1px solid #c5a059;
+        }
+
         .hero {
             padding: 60px 0;
             text-align: center;
-            background: #eeeeee;
             background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=1200&q=80');
             background-size: cover;
             background-position: center;
@@ -90,7 +120,6 @@
             margin-bottom: 15px;
         }
 
-        /* Filter Section with Background */
         .filter-section-wrapper {
             background: #2d3748 url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80') no-repeat center center;
             background-size: cover;
@@ -106,7 +135,7 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 15px;
         }
 
@@ -167,27 +196,48 @@
             color: #ffffff;
         }
 
-        /* Products Grid */
         .products-grid {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
-            justify-content: center;
             margin-bottom: 50px;
         }
 
         .product-card {
             background: #ffffff;
-            width: 300px;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: 0.3s;
             cursor: pointer;
+            position: relative;
         }
 
         .product-card:hover {
             transform: translateY(-5px);
+        }
+
+        .delete-product-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(229, 62, 62, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: 0.3s;
+        }
+
+        .delete-product-btn:hover {
+            background: #e53e3e;
+            transform: scale(1.1);
         }
 
         .product-image-container {
@@ -231,7 +281,6 @@
             background: #c5a059;
         }
 
-        /* Footer */
         footer {
             background: #1a202c;
             color: #ffffff;
@@ -248,33 +297,84 @@
 
         .no-products {
             padding: 40px;
+            text-align: center;
             color: #718096;
             font-size: 18px;
+            grid-column: 1 / -1;
         }
-        
-        /* تنسيقات إضافية لنظام المنتجات */
-        .admin-btn {
-            transition: all 0.3s ease;
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-        
-        .admin-btn:hover {
-            transform: scale(1.05);
+
+        .modal-content {
+            background: #1a202c;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            border: 2px solid #c5a059;
+            color: white;
         }
-        
-        /* تنسيق الحقول في المودال */
-        #addProductForm input,
-        #addProductForm select {
+
+        .modal-large {
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h3 {
+            color: #c5a059;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #c5a059;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #2d3748;
+            color: white;
             font-family: 'Cairo', sans-serif;
-            font-size: 14px;
         }
-        
-        #addProductForm input:focus,
-        #addProductForm select:focus {
-            outline: none;
-            border-color: #c5a059 !important;
-        }
-        
-        /* تنسيقات نظام الطلبات */
+
         .order-filter-btn {
             padding: 8px 20px;
             background: #2d3748;
@@ -326,6 +426,7 @@
             display: flex;
             gap: 10px;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
 
         .order-action-btn {
@@ -338,39 +439,108 @@
             font-weight: bold;
             transition: 0.3s;
         }
-        
-        .order-action-btn:hover {
-            opacity: 0.9;
+
+        .btn-danger {
+            background: #e53e3e;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #d69e2e;
+            color: white;
+        }
+
+        .btn-success {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #4a5568;
+            color: white;
+        }
+
+        .product-detail-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .product-detail-image {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .product-detail-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .product-detail-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .star-rating {
+            color: #d69e2e;
+            font-size: 18px;
+        }
+
+        .review-item {
+            padding: 15px;
+            border-bottom: 1px solid #4a5568;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: #c5a059;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+            }
+            .hero h1 {
+                font-size: 28px;
+            }
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Login Overlay -->
-    <div id="loginOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.98); z-index: 10000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); font-family: 'Cairo', sans-serif;">
-        <div style="background: #1a1a1a; padding: 40px; border-radius: 20px; border: 1px solid #c5a059; text-align: center; box-shadow: 0 0 30px rgba(197, 160, 89, 0.3); width: 350px;">
-            <h2 style="color: #c5a059; margin: 0 0 10px 0; font-size: 26px;">متجر الغنى</h2>
-            <p style="color: #ccc; margin-bottom: 25px; font-size: 14px;">اختر طريقة الدخول للمتابعة</p>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal" style="display: flex;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>متجر الغنى</h3>
+                <button class="close-modal" onclick="closeLoginModal()">✕</button>
+            </div>
+            <p style="color: #ccc; margin-bottom: 25px; text-align: center;">تسجيل الدخول للمتابعة</p>
             
             <div style="display: flex; gap: 10px; margin-bottom: 25px;">
-                <button id="clientBtn" onclick="selectUserType('client')" style="flex: 1; padding: 12px; background: #2d3748; color: white; border: 2px solid #c5a059; border-radius: 10px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif;">عميل</button>
-                <button id="adminBtn" onclick="selectUserType('admin')" style="flex: 1; padding: 12px; background: #1a1a1a; color: #c5a059; border: 2px solid #444; border-radius: 10px; font-weight: bold; cursor: pointer; font-family: 'Cairo', sans-serif;">مسؤول</button>
+                <button id="loginClientBtn" onclick="showLoginForm('client')" style="flex:1; padding:10px; background:#2d3748; color:white; border:2px solid #c5a059; border-radius:8px; cursor:pointer;">عميل</button>
+                <button id="loginAdminBtn" onclick="showLoginForm('admin')" style="flex:1; padding:10px; background:#1a1a1a; color:#c5a059; border:2px solid #444; border-radius:8px; cursor:pointer;">مسؤول</button>
             </div>
             
-            <div id="clientSection" style="display: block;">
-                <p style="color: #c5a059; margin-bottom: 15px; font-size: 14px;">أدخل اسمك للبدء</p>
-                <input type="text" id="userNameInput" placeholder="اسمك هنا..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; background: #222; color: white; text-align: center; outline: none; font-family: 'Cairo', sans-serif;">
-                <button onclick="submitLogin()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #c5a059, #fcf6ba); color: #1a202c; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; font-family: 'Cairo', sans-serif;">الدخول كعميل</button>
+            <div id="clientLoginForm">
+                <p style="color: #c5a059; margin-bottom: 15px; text-align: center;">أدخل اسمك للبدء</p>
+                <input type="text" id="clientName" placeholder="اسمك هنا" style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #444; border-radius:8px; background:#222; color:white; text-align:center;">
+                <button onclick="clientLogin()" style="width:100%; padding:12px; background:#c5a059; color:#1a202c; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">الدخول كعميل</button>
             </div>
             
-            <div id="adminSection" style="display: none;">
-                <p style="color: #c5a059; margin-bottom: 15px; font-size: 14px;">الدخول لوحة التحكم</p>
-                <input type="text" id="adminNameInput" placeholder="اسم المسؤول..." style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #444; border-radius: 10px; background: #222; color: white; text-align: center; outline: none; font-family: 'Cairo', sans-serif;">
-                <input type="password" id="adminPassInput" placeholder="كلمة المرور..." style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; background: #222; color: white; text-align: center; outline: none; font-family: 'Cairo', sans-serif;">
-                <button onclick="submitAdminLogin()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #1a202c, #2d3748); color: #c5a059; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; font-family: 'Cairo', sans-serif;">الدخول كمسؤول</button>
+            <div id="adminLoginForm" style="display:none;">
+                <p style="color: #c5a059; margin-bottom: 15px; text-align: center;">بيانات الدخول للمسؤول</p>
+                <input type="email" id="adminEmail" placeholder="البريد الإلكتروني" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #444; border-radius:8px; background:#222; color:white;">
+                <input type="password" id="adminPassword" placeholder="كلمة المرور" style="width:100%; padding:12px; margin-bottom:20px; border:1px solid #444; border-radius:8px; background:#222; color:white;">
+                <button onclick="adminLogin()" style="width:100%; padding:12px; background:#1a202c; color:#c5a059; border:2px solid #c5a059; border-radius:8px; font-weight:bold; cursor:pointer;">تسجيل دخول المسؤول</button>
+                <p style="color:#666; font-size:12px; margin-top:15px; text-align:center;">حساب تجريبي: admin@algina.com / Admin123456</p>
             </div>
-            
-            <p style="color: #666; font-size: 12px; margin-top: 20px;">كلمة مرور المسؤول: 12345</p>
         </div>
     </div>
 
@@ -378,9 +548,12 @@
         <div class="container">
             <nav>
                 <a href="#" class="logo">AL <span>GINA</span></a>
-                <div class="user-info" onclick="resetLogin()">
-                    <span id="userDisplay">مرحباً</span>
-                    <i class="fas fa-user" style="margin-right: 8px;"></i>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div id="adminActions" style="display: none;"></div>
+                    <div class="user-info" id="userInfo" onclick="logout()">
+                        <span id="userDisplay">مرحباً</span>
+                        <i class="fas fa-user" style="margin-right: 8px;"></i>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -398,23 +571,23 @@
             <div class="filter-content">
                 <h2>اكتشف مجموعتنا</h2>
                 <div class="filter-group">
-                    <button class="filter-btn active" onclick="filterMain('all', this)">الكل</button>
-                    <button class="filter-btn" onclick="filterMain('bedroom', this)">غرف النوم</button>
-                    <button class="filter-btn" onclick="filterMain('sofas', this)">الكنبات</button>
-                    <button class="filter-btn" onclick="filterMain('electronics', this)">إلكترونيات</button>
+                    <button class="filter-btn active" data-filter="all">الكل</button>
+                    <button class="filter-btn" data-filter="bedroom">غرف النوم</button>
+                    <button class="filter-btn" data-filter="sofas">الكنبات</button>
+                    <button class="filter-btn" data-filter="electronics">إلكترونيات</button>
                 </div>
 
-                <div id="bedroom-subs" class="sub-filters">
-                    <button class="sub-btn active" onclick="filterSub('all', this)">كل الغرف</button>
-                    <button class="sub-btn" onclick="filterSub('open', this)">أبواب فتح</button>
-                    <button class="sub-btn" onclick="filterSub('slide', this)">أبواب سحاب</button>
-                    <button class="sub-btn" onclick="filterSub('both', this)">فتح وغلق</button>
+                <div id="subFilters" class="sub-filters">
+                    <button class="sub-btn active" data-sub="all">كل الغرف</button>
+                    <button class="sub-btn" data-sub="open">أبواب فتح</button>
+                    <button class="sub-btn" data-sub="slide">أبواب سحاب</button>
+                    <button class="sub-btn" data-sub="both">فتح وغلق</button>
                 </div>
             </div>
         </div>
 
-        <div class="products-grid" id="products-container">
-            <!-- سيتم تحميل المنتجات هنا بواسطة JavaScript -->
+        <div class="products-grid" id="productsContainer">
+            <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>
         </div>
     </div>
 
@@ -430,114 +603,88 @@
         </div>
     </footer>
 
-    <!-- Modal إضافة المنتجات -->
-    <div id="addProductModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10001; justify-content: center; align-items: center;">
-        <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; border: 2px solid #c5a059; color: white;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h3 style="color: #c5a059; margin: 0;">إضافة منتج جديد</h3>
-                <button onclick="closeAddProductModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>إضافة منتج جديد</h3>
+                <button class="close-modal" onclick="closeAddProductModal()">✕</button>
             </div>
-            
-            <form id="addProductForm" onsubmit="addNewProduct(event)">
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; color: #c5a059;">اسم المنتج</label>
-                    <input type="text" id="newProductName" required style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; background: #2d3748; color: white;">
+            <form id="addProductForm">
+                <div class="form-group">
+                    <label>اسم المنتج</label>
+                    <input type="text" id="newProductName" required>
                 </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; color: #c5a059;">الفئة الرئيسية</label>
-                    <select id="newProductCategory" required style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; background: #2d3748; color: white;">
+                <div class="form-group">
+                    <label>الفئة الرئيسية</label>
+                    <select id="newProductCategory">
                         <option value="bedroom">غرف النوم</option>
                         <option value="sofas">الكنبات</option>
                         <option value="electronics">إلكترونيات</option>
                     </select>
                 </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; color: #c5a059;">النوع الفرعي</label>
-                    <select id="newProductSub" required style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; background: #2d3748; color: white;">
+                <div class="form-group">
+                    <label>النوع الفرعي</label>
+                    <select id="newProductSub">
                         <option value="open">أبواب فتح</option>
                         <option value="slide">أبواب سحاب</option>
                         <option value="both">فتح وغلق</option>
                     </select>
                 </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; color: #c5a059;">رابط الصورة</label>
-                    <input type="text" id="newProductImage" placeholder="images/IMG-20251010-WA0XXX.jpg" required style="width: 100%; padding: 10px; border: 1px solid #444; border-radius: 8px; background: #2d3748; color: white;">
+                <div class="form-group">
+                    <label>رابط الصورة</label>
+                    <input type="text" id="newProductImage" placeholder="images/IMG-xxxx.jpg" required>
                 </div>
-                
                 <div style="display: flex; gap: 10px; margin-top: 25px;">
-                    <button type="button" onclick="closeAddProductModal()" style="flex: 1; padding: 12px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer;">إلغاء</button>
-                    <button type="submit" style="flex: 1; padding: 12px; background: #c5a059; color: #1a202c; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">إضافة المنتج</button>
+                    <button type="button" onclick="closeAddProductModal()" style="flex:1; padding:12px; background:#444; border:none; border-radius:8px; color:white; cursor:pointer;">إلغاء</button>
+                    <button type="submit" style="flex:1; padding:12px; background:#c5a059; border:none; border-radius:8px; color:#1a202c; font-weight:bold; cursor:pointer;">إضافة المنتج</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Modal إدارة الطلبات -->
-    <div id="ordersModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10002; justify-content: center; align-items: flex-start; padding-top: 50px; overflow-y: auto; font-family: 'Cairo', sans-serif;">
-        <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 1000px; border: 2px solid #c5a059; color: white; margin-bottom: 50px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h3 style="color: #c5a059; margin: 0; font-size: 24px;"><i class="fas fa-shopping-cart"></i> إدارة الطلبات</h3>
-                <button onclick="closeOrdersModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
+    <!-- Orders Modal -->
+    <div id="ordersModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3><i class="fas fa-shopping-cart"></i> إدارة الطلبات</h3>
+                <button class="close-modal" onclick="closeOrdersModal()">✕</button>
             </div>
-            
             <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-                <button onclick="filterOrders('all')" id="filterAll" class="order-filter-btn active">جميع الطلبات</button>
-                <button onclick="filterOrders('new')" id="filterNew" class="order-filter-btn">جديدة</button>
-                <button onclick="filterOrders('processing')" id="filterProcessing" class="order-filter-btn">قيد المعالجة</button>
-                <button onclick="filterOrders('completed')" id="filterCompleted" class="order-filter-btn">مكتملة</button>
-                <button onclick="filterOrders('cancelled')" id="filterCancelled" class="order-filter-btn">ملغية</button>
+                <button class="order-filter-btn active" data-order-filter="all">جميع الطلبات</button>
+                <button class="order-filter-btn" data-order-filter="new">جديدة</button>
+                <button class="order-filter-btn" data-order-filter="processing">قيد المعالجة</button>
+                <button class="order-filter-btn" data-order-filter="completed">مكتملة</button>
+                <button class="order-filter-btn" data-order-filter="cancelled">ملغية</button>
             </div>
-            
             <div id="ordersListContainer" style="max-height: 500px; overflow-y: auto;">
-                <!-- ستظهر الطلبات هنا -->
-            </div>
-            
-            <div style="margin-top: 30px; text-align: center;">
-                <button onclick="closeOrdersModal()" style="padding: 10px 25px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer;">إغلاق</button>
+                <div class="loading-spinner">جاري التحميل...</div>
             </div>
         </div>
     </div>
 
-    <!-- Modal تفاصيل المنتج -->
-    <div id="productDetailModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 10003; justify-content: center; align-items: center; padding: 20px;">
-        <div style="background: #1a202c; padding: 30px; border-radius: 15px; width: 90%; max-width: 900px; border: 2px solid #c5a059; color: white; max-height: 90vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h3 id="detailProductName" style="color: #c5a059; margin: 0; font-size: 24px;"></h3>
-                <button onclick="closeProductDetail()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">✕</button>
+    <!-- Product Detail Modal -->
+    <div id="productDetailModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="detailProductName"></h3>
+                <button class="close-modal" onclick="closeProductDetail()">✕</button>
             </div>
-            
-            <div style="display: flex; flex-wrap: wrap; gap: 30px;">
-                <div style="flex: 1; min-width: 300px;">
-                    <div id="detailProductImage" style="width: 100%; height: 400px; background: #2d3748; border-radius: 10px; overflow: hidden;">
-                        <!-- سيتم تعبئة الصورة هنا -->
-                    </div>
+            <div class="product-detail-container">
+                <div class="product-detail-image">
+                    <img id="detailProductImage" src="" alt="">
                 </div>
-                
-                <div style="flex: 1; min-width: 300px;">
-                    <div style="margin-bottom: 20px;">
-                        <h4 style="color: #c5a059; margin-bottom: 10px;">معلومات المنتج</h4>
-                        <div id="detailProductInfo" style="line-height: 2;">
-                            <!-- سيتم تعبئة المعلومات هنا -->
-                        </div>
+                <div class="product-detail-info">
+                    <div id="detailProductInfo"></div>
+                    <div style="margin-top: 25px;">
+                        <h4 style="color: #c5a059;">التقييمات</h4>
+                        <div id="productReviews"></div>
                     </div>
-                    
-                    <div style="margin-bottom: 25px;">
-                        <h4 style="color: #c5a059; margin-bottom: 10px;">التقييمات</h4>
-                        <div id="productReviews">
-                            <!-- التقييمات ستظهر هنا -->
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 15px; margin-top: 30px;">
-                        <button onclick="sendOrderFromDetail()" style="flex: 1; padding: 15px; background: #c5a059; color: #1a202c; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                    <div style="display: flex; gap: 15px; margin-top: 25px;">
+                        <button onclick="sendOrderFromDetail()" style="flex:1; padding:15px; background:#c5a059; color:#1a202c; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">
                             <i class="fab fa-whatsapp"></i> طلب عبر واتساب
                         </button>
-                        <button onclick="closeProductDetail()" style="flex: 1; padding: 15px; background: #444; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            إغلاق
-                        </button>
+                        <button onclick="closeProductDetail()" style="flex:1; padding:15px; background:#444; color:white; border:none; border-radius:8px; cursor:pointer;">إغلاق</button>
                     </div>
                 </div>
             </div>
@@ -545,454 +692,347 @@
     </div>
 
     <script>
-        // ========== المتغيرات العامة ==========
-        let products = [
-            { id: 1, name: "غرفة كلاسيك 058", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0058.jpg" },
-            { id: 2, name: "غرفة ملكية 084", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0084.jpg" },
-            { id: 3, name: "غرفة فخامة 087", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0087.jpg" },
-            { id: 4, name: "غرفة هادئة 089", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0089.jpg" },
-            { id: 5, name: "غرفة مودرن 048", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0048.jpg" },
-            { id: 6, name: "غرفة راقية 080", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0080.jpg" },
-            { id: 7, name: "غرفة مميزة 060", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0060.jpg" },
-            { id: 8, name: "غرفة عصرية 062", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0062.jpg" },
-            { id: 9, name: "غرفة أنيقة 072", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0072.jpg" },
-            { id: 10, name: "غرفة نوم 071", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0071.jpg" },
-            { id: 11, name: "غرفة سحاب 099", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0099.jpg" },
-            { id: 12, name: "غرفة سحاب 098", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0098.jpg" },
-            { id: 13, name: "غرفة سحاب 107", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0107.jpg" },
-            { id: 14, name: "غرفة سحاب 069", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0069.jpg" },
-            { id: 15, name: "غرفة سحاب 051", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0051.jpg" },
-            { id: 16, name: "غرفة سحاب 092", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0092.jpg" },
-            { id: 17, name: "غرفة سحاب 054", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0054.jpg" },
-            { id: 18, name: "غرفة سحاب 047", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0047.jpg" },
-            { id: 19, name: "غرفة سحاب 102", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0102.jpg" },
-            { id: 20, name: "غرفة سحاب 075", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0075.jpg" },
-            { id: 21, name: "غرفة ميكس 055", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0055.jpg" },
-            { id: 22, name: "غرفة ميكس 097", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0097.jpg" },
-            { id: 23, name: "غرفة ميكس 077", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0077.jpg" },
-            { id: 24, name: "غرفة ميكس 050", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0050.jpg" },
-            { id: 25, name: "غرفة ميكس 094", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0094.jpg" },
-            { id: 26, name: "غرفة ميكس 096", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0096.jpg" },
-            { id: 27, name: "غرفة ميكس 082", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0082.jpg" },
-            { id: 28, name: "غرفة ميكس 109", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0109.jpg" },
-            { id: 29, name: "غرفة ميكس 070", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0070.jpg" },
-            { id: 30, name: "كنب مودرن 057", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0057.jpg" },
-            { id: 31, name: "كنب أنيق 088", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0088.jpg" },
-            { id: 32, name: "كنب كلاسيك 067", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0067.jpg" },
-            { id: 33, name: "كنب زاوية 059", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0059.jpg" },
-            { id: 34, name: "كنب مريح 110", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0110.jpg" },
-            { id: 35, name: "كنب 076", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0076.jpg" },
-            { id: 36, name: "كنب 095", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0095.jpg" },
-            { id: 37, name: "كنب 056", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0056.jpg" },
-            { id: 38, name: "كنب 068", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0068.jpg" },
-            { id: 39, name: "شاشة ذكية 053", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0053.jpg" },
-            { id: 40, name: "منتج تقني 064", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0064.jpg" },
-            { id: 41, name: "منتج 063", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0063.jpg" },
-            { id: 42, name: "جهاز منزلي 065", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0065.jpg" },
-            { id: 43, name: "نظام ترفيه 112", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0112.jpg" },
-            { id: 44, name: "منتج 106", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0106.jpg" },
-            { id: 45, name: "جهاز 074", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0074.jpg" },
-            { id: 46, name: "منتج 066", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0066.jpg" },
-            { id: 47, name: "جهاز 086", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0086.jpg" }
-        ];
+        // ==================== Firebase Configuration ====================
+        // ⚠️ استبدل هذه القيم بإعدادات مشروعك من Firebase Console
+        const firebaseConfig = {
+            apiKey: "AIzaSyB1ulbptAmSmzfWL8VMadv62jOrltxRrbc",
+            authDomain: "al-gina-db.firebaseapp.com",
+            databaseURL: "https://al-gina-db-default-rtdb.firebaseio.com",
+            projectId: "al-gina-db",
+            storageBucket: "al-gina-db.firebasestorage.app",
+            messagingSenderId: "585470728532",
+            appId: "1:585470728532:web:18a0bc300a0a61d88490c1",
+            measurementId: "G-HCWRCEDSFB"
+        };
 
-        let orders = JSON.parse(localStorage.getItem('alGinaOrders')) || [];
-        let productReviews = JSON.parse(localStorage.getItem('alGinaReviews')) || {};
-        let selectedUserType = 'client';
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // ==================== Global Variables ====================
+        let currentUser = null;          // { uid, email, isAdmin, displayName }
+        let products = [];
+        let orders = [];
+        let productReviews = {};
         let currentProductDetail = null;
+        let currentFilter = 'all';
+        let currentSubFilter = 'all';
 
-        // ========== نظام تسجيل الدخول ==========
-        function selectUserType(type) {
-            selectedUserType = type;
-            
-            document.getElementById('clientBtn').style.background = type === 'client' ? '#2d3748' : '#1a1a1a';
-            document.getElementById('clientBtn').style.color = type === 'client' ? 'white' : '#c5a059';
-            document.getElementById('clientBtn').style.border = type === 'client' ? '2px solid #c5a059' : '2px solid #444';
-            
-            document.getElementById('adminBtn').style.background = type === 'admin' ? '#2d3748' : '#1a1a1a';
-            document.getElementById('adminBtn').style.color = type === 'admin' ? 'white' : '#c5a059';
-            document.getElementById('adminBtn').style.border = type === 'admin' ? '2px solid #c5a059' : '2px solid #444';
-            
-            document.getElementById('clientSection').style.display = type === 'client' ? 'block' : 'none';
-            document.getElementById('adminSection').style.display = type === 'admin' ? 'block' : 'none';
+        // ==================== Helper Functions ====================
+        function showLoading(containerId) {
+            document.getElementById(containerId).innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> جاري التحميل...</div>';
         }
 
-        function submitAdminLogin() {
-            const name = document.getElementById('adminNameInput').value;
-            const password = document.getElementById('adminPassInput').value;
-            
-            if (name.trim() === "" || password.trim() === "") {
-                alert("الرجاء إدخال اسم المسؤول وكلمة المرور");
-                return;
-            }
-            
-            if (password === "12345") {
-                localStorage.setItem("alGinaUser", name);
-                localStorage.setItem("alGinaUserType", "admin");
-                document.getElementById("loginOverlay").style.display = "none";
-                updateUserDisplay();
-                alert(`مرحباً بك مسؤول ${name}!`);
-            } else {
-                alert("كلمة المرور غير صحيحة. حاول مرة أخرى.");
-            }
+        function formatDate() {
+            return new Date().toLocaleDateString('ar-SA');
         }
 
-        function submitLogin() {
-            const name = document.getElementById("userNameInput").value;
-            if (name.trim() !== "") {
-                localStorage.setItem("alGinaUser", name);
-                localStorage.setItem("alGinaUserType", "client");
-                document.getElementById("loginOverlay").style.display = "none";
-                updateUserDisplay();
-            } else {
-                alert("من فضلك، أدخل اسمك أولاً.");
-            }
+        function formatTime() {
+            return new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'});
         }
 
-        function updateUserDisplay() {
-            const userName = localStorage.getItem("alGinaUser");
-            const userType = localStorage.getItem("alGinaUserType");
-            const userDisplay = document.getElementById("userDisplay");
-            
-            if (userName) {
-                const typeIcon = userType === 'admin' ? '👑 ' : '👤 ';
-                userDisplay.innerHTML = `${typeIcon} ${userName}`;
-                userDisplay.style.color = userType === 'admin' ? '#c5a059' : '';
-                userDisplay.style.fontWeight = userType === 'admin' ? '800' : '700';
-                
-                // إزالة جميع أزرار المسؤولين السابقة
-                const adminButtons = document.querySelectorAll('.admin-btn');
-                adminButtons.forEach(btn => btn.remove());
-                
-                // إضافة أزرار المسؤولين
-                if (userType === 'admin') {
-                    // زر إضافة منتج
-                    const addButton = document.createElement('button');
-                    addButton.innerHTML = '<i class="fas fa-plus"></i> إضافة منتج';
-                    addButton.className = 'admin-btn';
-                    addButton.onclick = showAddProductModal;
-                    addButton.style.cssText = `
-                        background: #c5a059;
-                        color: #1a202c;
-                        border: none;
-                        padding: 8px 15px;
-                        border-radius: 5px;
-                        margin-right: 10px;
-                        cursor: pointer;
-                        font-weight: bold;
-                        font-family: 'Cairo', sans-serif;
-                        font-size: 14px;
-                    `;
-                    
-                    // زر الطلبات
-                    const ordersButton = document.createElement('button');
-                    ordersButton.innerHTML = '<i class="fas fa-shopping-cart"></i> الطلبات';
-                    ordersButton.className = 'admin-btn';
-                    ordersButton.onclick = showOrdersModal;
-                    ordersButton.style.cssText = `
-                        background: #2d3748;
-                        color: #c5a059;
-                        border: 1px solid #c5a059;
-                        padding: 8px 15px;
-                        border-radius: 5px;
-                        margin-right: 10px;
-                        cursor: pointer;
-                        font-weight: bold;
-                        font-family: 'Cairo', sans-serif;
-                        font-size: 14px;
-                    `;
-                    
-                    // إضافة الأزرار
-                    const userInfoDiv = document.querySelector('.user-info');
-                    userInfoDiv.parentNode.insertBefore(ordersButton, userInfoDiv);
-                    userInfoDiv.parentNode.insertBefore(addButton, userInfoDiv);
+        // تصحيح تصنيفات المنتجات القديمة (مرة واحدة)
+        function fixProductsCategories(productsArray) {
+            return productsArray.map(p => {
+                let category = p.category;
+                const name = p.name || '';
+                if (name.includes('كنب') || name.includes('كنبة')) category = 'sofas';
+                if (name.includes('شاشة') || name.includes('جهاز') || name.includes('نظام') || name.includes('منتج تقني')) category = 'electronics';
+                return { ...p, category };
+            });
+        }
+
+        // ==================== Firebase Data Operations ====================
+        async function loadProducts() {
+            return new Promise((resolve) => {
+                database.ref('products').on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        let productsList = Object.entries(data).map(([key, value]) => ({ ...value, firebaseKey: key }));
+                        // تصحيح التصنيفات للبيانات القديمة
+                        productsList = fixProductsCategories(productsList);
+                        products = productsList;
+                    } else {
+                        // بيانات أولية إذا كانت القاعدة فارغة
+                        const defaultProducts = [
+                            { id: 1, name: "غرفة كلاسيك 058", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0058.jpg" },
+                            { id: 2, name: "غرفة ملكية 084", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0084.jpg" },
+                            { id: 3, name: "غرفة فخامة 087", category: "bedroom", sub: "open", img: "images/IMG-20251010-WA0087.jpg" },
+                            { id: 4, name: "كنب مودرن 057", category: "sofas", sub: "open", img: "images/IMG-20251010-WA0057.jpg" },
+                            { id: 5, name: "كنب أنيق 088", category: "sofas", sub: "open", img: "images/IMG-20251010-WA0088.jpg" },
+                            { id: 6, name: "شاشة ذكية 053", category: "electronics", sub: "open", img: "images/IMG-20251010-WA0053.jpg" },
+                            { id: 7, name: "جهاز منزلي 065", category: "electronics", sub: "open", img: "images/IMG-20251010-WA0065.jpg" }
+                        ];
+                        products = defaultProducts;
+                        // حفظ البيانات الأولية في Firebase
+                        defaultProducts.forEach(p => {
+                            database.ref('products').push(p);
+                        });
+                    }
+                    renderProducts();
+                    resolve();
+                });
+            });
+        }
+
+        async function loadOrders() {
+            database.ref('orders').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    orders = Object.entries(data).map(([key, value]) => ({ ...value, firebaseKey: key }));
+                } else {
+                    orders = [];
                 }
-            } else {
-                userDisplay.textContent = 'مرحباً';
-                userDisplay.style.color = '';
-                userDisplay.style.fontWeight = '700';
+                if (document.getElementById('ordersModal').style.display === 'flex') {
+                    renderOrders();
+                }
+            });
+        }
+
+        async function loadReviews() {
+            database.ref('reviews').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    productReviews = data;
+                } else {
+                    productReviews = {};
+                }
+                renderProducts(); // تحديث التقييمات في البطاقات
+                if (currentProductDetail) {
+                    displayProductReviews(currentProductDetail.id);
+                }
+            });
+        }
+
+        async function addProductToFirebase(product) {
+            const newRef = database.ref('products').push();
+            await newRef.set(product);
+        }
+
+        async function deleteProductFromFirebase(productKey) {
+            await database.ref('products').child(productKey).remove();
+        }
+
+        async function addOrderToFirebase(order) {
+            const newRef = database.ref('orders').push();
+            await newRef.set(order);
+        }
+
+        async function updateOrderStatusInFirebase(orderKey, newStatus) {
+            await database.ref('orders').child(orderKey).update({ status: newStatus });
+        }
+
+        async function deleteOrderFromFirebase(orderKey) {
+            await database.ref('orders').child(orderKey).remove();
+        }
+
+        async function addReviewToFirebase(productId, review) {
+            const reviewRef = database.ref(`reviews/${productId}`);
+            const snapshot = await reviewRef.get();
+            let reviews = snapshot.val() || [];
+            reviews.push(review);
+            await reviewRef.set(reviews);
+        }
+
+        // ==================== UI Rendering ====================
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            let filtered = [...products];
+            
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(p => p.category === currentFilter);
             }
-        }
-
-        function resetLogin() {
-            localStorage.removeItem("alGinaUser");
-            localStorage.removeItem("alGinaUserType");
-            document.getElementById("loginOverlay").style.display = "flex";
-            document.getElementById("userNameInput").value = "";
-            document.getElementById("adminNameInput").value = "";
-            document.getElementById("adminPassInput").value = "";
-            selectUserType('client');
-        }
-
-        // ========== نظام المنتجات الأساسي ==========
-        function renderItems(items) {
-            const container = document.getElementById('products-container');
-            if (items.length === 0) {
+            
+            if (currentFilter === 'bedroom' && currentSubFilter !== 'all') {
+                filtered = filtered.filter(p => p.sub === currentSubFilter);
+            }
+            
+            if (filtered.length === 0) {
                 container.innerHTML = '<div class="no-products">عذراً، لا توجد منتجات في هذا القسم حالياً.</div>';
                 return;
             }
-            container.innerHTML = items.map(p => `
+            
+            const isAdmin = currentUser && currentUser.isAdmin;
+            
+            container.innerHTML = filtered.map(p => `
                 <div class="product-card" onclick="showProductDetail(${p.id})">
+                    ${isAdmin ? `<button class="delete-product-btn" onclick="event.stopPropagation(); deleteProduct('${p.firebaseKey}', ${p.id})"><i class="fas fa-trash"></i></button>` : ''}
                     <div class="product-image-container">
-                        <img src="${p.img}" class="product-image" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x250?text=Image+Not+Found'">
+                        <img src="${p.img}" class="product-image" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x250?text=صورة+غير+متوفرة'">
                     </div>
                     <div class="product-info">
                         <h3>${p.name}</h3>
                         <div style="margin: 10px 0; color: #c5a059;">
                             <i class="fas fa-star"></i> ${getProductRating(p.id).toFixed(1)}
                         </div>
-                        <button class="btn-contact" onclick="event.stopPropagation(); sendOrder('${p.name}')">طلب عبر واتساب</button>
+                        <button class="btn-contact" onclick="event.stopPropagation(); sendOrder('${p.name.replace(/'/g, "\\'")}')">طلب عبر واتساب</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function filterMain(cat, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            const subMenu = document.getElementById('bedroom-subs');
-            subMenu.style.display = (cat === 'bedroom') ? 'block' : 'none';
-            
-            let filtered = [];
-            if (cat === 'all') {
-                filtered = products;
-            } else if (cat === 'bedroom') {
-                filtered = products.filter(p => p.category === 'bedroom');
-            } else if (cat === 'sofas') {
-                filtered = products.filter(p => p.category === 'sofas');
-            } else if (cat === 'electronics') {
-                filtered = products.filter(p => p.category === 'electronics');
-            }
-            renderItems(filtered);
-        }
-
-        function filterSub(subType, btn) {
-            document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            let filtered = products.filter(p => p.category === 'bedroom');
-            if (subType !== 'all') {
-                filtered = filtered.filter(p => p.sub === subType);
-            }
-            renderItems(filtered);
-        }
-
-        // ========== نظام إضافة المنتجات ==========
-        function showAddProductModal() {
-            const userType = localStorage.getItem("alGinaUserType");
-            if (userType !== "admin") {
-                alert("هذه الميزة متاحة فقط للمسؤولين!");
-                return;
-            }
-            document.getElementById("addProductModal").style.display = "flex";
-        }
-
-        function closeAddProductModal() {
-            document.getElementById("addProductModal").style.display = "none";
-            document.getElementById("addProductForm").reset();
-        }
-
-        function addNewProduct(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById("newProductName").value;
-            const category = document.getElementById("newProductCategory").value;
-            const sub = document.getElementById("newProductSub").value;
-            const img = document.getElementById("newProductImage").value;
-            
-            if (!name || !category || !sub || !img) {
-                alert("يرجى ملء جميع الحقول!");
-                return;
-            }
-            
-            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-            
-            const newProduct = {
-                id: newId,
-                name: name,
-                category: category,
-                sub: sub,
-                img: img
-            };
-            
-            products.push(newProduct);
-            saveProductsToLocalStorage();
-            renderItems(products);
-            closeAddProductModal();
-            alert(`تم إضافة المنتج "${name}" بنجاح!`);
-        }
-
-        function saveProductsToLocalStorage() {
-            try {
-                localStorage.setItem("alGinaProducts", JSON.stringify(products));
-            } catch (e) {
-                console.error("Error saving products:", e);
-            }
-        }
-
-        function loadProductsFromLocalStorage() {
-            try {
-                const savedProducts = localStorage.getItem("alGinaProducts");
-                if (savedProducts) {
-                    const parsedProducts = JSON.parse(savedProducts);
-                    const existingIds = products.map(p => p.id);
-                    parsedProducts.forEach(product => {
-                        if (!existingIds.includes(product.id)) {
-                            products.push(product);
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error("Error loading products:", e);
-            }
-        }
-
-        // ========== نظام الطلبات ==========
-        function showOrdersModal() {
-            const userType = localStorage.getItem("alGinaUserType");
-            if (userType !== "admin") {
-                alert("هذه الميزة متاحة فقط للمسؤولين!");
-                return;
-            }
-            document.getElementById("ordersModal").style.display = "flex";
-            renderOrders('all');
-        }
-
-        function closeOrdersModal() {
-            document.getElementById("ordersModal").style.display = "none";
-        }
-
-        function filterOrders(status) {
-            document.querySelectorAll('.order-filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            renderOrders(status);
+        function getProductRating(productId) {
+            const reviews = productReviews[productId] || [];
+            if (reviews.length === 0) return 5.0;
+            const total = reviews.reduce((sum, r) => sum + r.rating, 0);
+            return total / reviews.length;
         }
 
         function renderOrders(filter = 'all') {
             const container = document.getElementById('ordersListContainer');
-            
-            let filteredOrders = orders;
+            let filtered = [...orders];
             if (filter !== 'all') {
-                filteredOrders = orders.filter(order => order.status === filter);
+                filtered = filtered.filter(o => o.status === filter);
             }
             
-            if (filteredOrders.length === 0) {
+            if (filtered.length === 0) {
                 container.innerHTML = '<div style="text-align: center; padding: 40px; color: #a0aec0;">لا توجد طلبات</div>';
                 return;
             }
             
-            container.innerHTML = filteredOrders.map((order, index) => `
+            container.innerHTML = filtered.map(order => `
                 <div class="order-card">
                     <div class="order-header">
                         <div>
                             <strong style="color: #c5a059;">طلب #${order.id}</strong>
-                            <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">
-                                ${order.date} | ${order.time}
-                            </div>
+                            <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">${order.date} | ${order.time}</div>
                         </div>
-                        <div class="order-status status-${order.status}">
-                            ${getStatusText(order.status)}
-                        </div>
+                        <div class="order-status status-${order.status}">${getStatusText(order.status)}</div>
                     </div>
-                    
-                    <div style="margin-bottom: 10px;">
-                        <strong>العميل:</strong> ${order.customer}
-                    </div>
-                    
-                    <div style="margin-bottom: 10px;">
-                        <strong>المنتج:</strong> ${order.product}
-                    </div>
-                    
-                    <div style="margin-bottom: 15px;">
-                        <strong>ملاحظات:</strong> ${order.notes || 'لا توجد ملاحظات'}
-                    </div>
-                    
+                    <div><strong>العميل:</strong> ${order.customer}</div>
+                    <div><strong>المنتج:</strong> ${order.product}</div>
+                    <div><strong>ملاحظات:</strong> ${order.notes || 'لا توجد'}</div>
                     <div class="order-actions">
                         ${order.status === 'new' ? `
-                            <button class="order-action-btn" style="background: #d69e2e; color: white;" onclick="updateOrderStatus(${order.id}, 'processing')">
-                                بدء المعالجة
-                            </button>
-                            <button class="order-action-btn" style="background: #38a169; color: white;" onclick="updateOrderStatus(${order.id}, 'completed')">
-                                إكمال الطلب
-                            </button>
-                            <button class="order-action-btn" style="background: #e53e3e; color: white;" onclick="updateOrderStatus(${order.id}, 'cancelled')">
-                                إلغاء الطلب
-                            </button>
+                            <button class="order-action-btn btn-warning" onclick="updateOrderStatus('${order.firebaseKey}', 'processing')">بدء المعالجة</button>
+                            <button class="order-action-btn btn-success" onclick="updateOrderStatus('${order.firebaseKey}', 'completed')">إكمال</button>
+                            <button class="order-action-btn btn-danger" onclick="updateOrderStatus('${order.firebaseKey}', 'cancelled')">إلغاء</button>
                         ` : ''}
-                        
                         ${order.status === 'processing' ? `
-                            <button class="order-action-btn" style="background: #38a169; color: white;" onclick="updateOrderStatus(${order.id}, 'completed')">
-                                إكمال الطلب
-                            </button>
-                            <button class="order-action-btn" style="background: #e53e3e; color: white;" onclick="updateOrderStatus(${order.id}, 'cancelled')">
-                                إلغاء الطلب
-                            </button>
+                            <button class="order-action-btn btn-success" onclick="updateOrderStatus('${order.firebaseKey}', 'completed')">إكمال</button>
+                            <button class="order-action-btn btn-danger" onclick="updateOrderStatus('${order.firebaseKey}', 'cancelled')">إلغاء</button>
                         ` : ''}
-                        
-                        <button class="order-action-btn" style="background: #4a5568; color: white;" onclick="deleteOrder(${order.id})">
-                            حذف الطلب
-                        </button>
+                        <button class="order-action-btn btn-secondary" onclick="deleteOrder('${order.firebaseKey}')">حذف الطلب</button>
                     </div>
                 </div>
             `).join('');
         }
 
         function getStatusText(status) {
-            const statusMap = {
-                'new': 'جديدة',
-                'processing': 'قيد المعالجة',
-                'completed': 'مكتملة',
-                'cancelled': 'ملغية'
+            const map = { new: 'جديدة', processing: 'قيد المعالجة', completed: 'مكتملة', cancelled: 'ملغية' };
+            return map[status] || status;
+        }
+
+        // ==================== Product Detail & Reviews ====================
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            currentProductDetail = product;
+            
+            document.getElementById('detailProductName').textContent = product.name;
+            document.getElementById('detailProductImage').src = product.img;
+            document.getElementById('detailProductImage').onerror = function() {
+                this.src = 'https://via.placeholder.com/600x400?text=صورة+غير+متوفرة';
             };
-            return statusMap[status] || status;
+            
+            const categoryMap = { bedroom: 'غرف النوم', sofas: 'الكنبات', electronics: 'إلكترونيات' };
+            const subMap = { open: 'أبواب فتح', slide: 'أبواب سحاب', both: 'فتح وغلق' };
+            
+            document.getElementById('detailProductInfo').innerHTML = `
+                <div><strong>الفئة:</strong> ${categoryMap[product.category] || product.category}</div>
+                <div><strong>النوع:</strong> ${subMap[product.sub] || product.sub}</div>
+                <div><strong>الرقم التسلسلي:</strong> ${product.id}</div>
+                <div class="star-rating" style="margin-top:15px;">
+                    ${'★'.repeat(Math.round(getProductRating(product.id)))}${'☆'.repeat(5 - Math.round(getProductRating(product.id)))}
+                    <span style="color:white;"> (${getProductRating(product.id).toFixed(1)}/5)</span>
+                </div>
+            `;
+            
+            displayProductReviews(product.id);
+            document.getElementById('productDetailModal').style.display = 'flex';
         }
 
-        function updateOrderStatus(orderId, newStatus) {
-            const orderIndex = orders.findIndex(o => o.id === orderId);
-            if (orderIndex !== -1) {
-                orders[orderIndex].status = newStatus;
-                localStorage.setItem('alGinaOrders', JSON.stringify(orders));
-                const currentFilter = document.querySelector('.order-filter-btn.active').getAttribute('onclick').replace("filterOrders('", "").replace("')", "");
-                renderOrders(currentFilter);
-                alert('تم تحديث حالة الطلب بنجاح');
+        function displayProductReviews(productId) {
+            const container = document.getElementById('productReviews');
+            const reviews = productReviews[productId] || [];
+            
+            if (reviews.length === 0) {
+                container.innerHTML = `
+                    <div style="background:#2d3748; padding:20px; border-radius:10px; text-align:center;">
+                        <p>لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!</p>
+                        <button onclick="addReview(${productId})" style="margin-top:15px; padding:8px 20px; background:#c5a059; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">أضف تقييمك</button>
+                    </div>
+                `;
+                return;
             }
+            
+            container.innerHTML = `
+                <div style="background:#2d3748; padding:20px; border-radius:10px;">
+                    ${reviews.map((review, idx) => `
+                        <div class="review-item" style="${idx === reviews.length-1 ? 'border-bottom:none;' : ''}">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                <strong style="color:#c5a059;">${review.reviewer}</strong>
+                                <div class="star-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</div>
+                            </div>
+                            <div>${review.comment}</div>
+                            <div style="font-size:12px; color:#a0aec0; margin-top:5px;">${review.date}</div>
+                        </div>
+                    `).join('')}
+                    <div style="text-align:center; margin-top:20px;">
+                        <button onclick="addReview(${productId})" style="padding:8px 20px; background:#2d3748; border:1px solid #c5a059; border-radius:8px; cursor:pointer; color:#c5a059;">+ أضف تقييمك</button>
+                    </div>
+                </div>
+            `;
         }
 
-        function deleteOrder(orderId) {
-            if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
-                orders = orders.filter(o => o.id !== orderId);
-                localStorage.setItem('alGinaOrders', JSON.stringify(orders));
-                const currentFilter = document.querySelector('.order-filter-btn.active').getAttribute('onclick').replace("filterOrders('", "").replace("')", "");
-                renderOrders(currentFilter);
+        async function addReview(productId) {
+            if (!currentUser || currentUser.isAdmin) {
+                alert("يرجى تسجيل الدخول كعميل لإضافة تقييم.");
+                return;
             }
+            const rating = prompt("تقيمك (من 1 إلى 5 نجوم):", "5");
+            if (!rating) return;
+            const ratingNum = parseInt(rating);
+            if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+                alert("الرجاء إدخال رقم بين 1 و 5");
+                return;
+            }
+            const comment = prompt("أضف تعليقك:", "منتج رائع!");
+            const newReview = {
+                reviewer: currentUser.displayName,
+                rating: ratingNum,
+                comment: comment || "لا يوجد تعليق",
+                date: formatDate()
+            };
+            await addReviewToFirebase(productId, newReview);
+            alert("شكراً لتقييمك!");
         }
 
-        // ========== نظام واتساب والطلبات ==========
-        function sendOrder(productName) {
-            const myNumber = "963945082925"; 
-            const userName = localStorage.getItem("alGinaUser") || "عميل جديد";
-            const userType = localStorage.getItem("alGinaUserType");
-            const message = `مرحباً متجر الغنى،%0aأنا ${userType === 'admin' ? 'المسؤول' : 'العميل'}: *${userName}*%0aأريد طلب: *${productName}*%0aأرجو التواصل معي لتأكيد الطلب.`;
+        // ==================== Orders ====================
+        async function sendOrder(productName) {
+            if (!currentUser) {
+                alert("يرجى تسجيل الدخول أولاً.");
+                return;
+            }
+            const myNumber = "963945082925";
+            const userName = currentUser.displayName;
+            const message = `مرحباً متجر الغنى،%0aأنا العميل: ${userName}%0aأريد طلب: ${productName}%0aأرجو التواصل معي لتأكيد الطلب.`;
             const whatsappURL = `https://wa.me/${myNumber}?text=${message}`;
             
             const newOrder = {
-                id: orders.length > 0 ? Math.max(...orders.map(o => o.id)) + 1 : 1,
+                id: Date.now(),
                 customer: userName,
                 product: productName,
-                date: new Date().toLocaleDateString('ar-SA'),
-                time: new Date().toLocaleTimeString('ar-SA', {hour: '2-digit', minute:'2-digit'}),
+                date: formatDate(),
+                time: formatTime(),
                 status: 'new',
                 notes: ''
             };
             
-            orders.push(newOrder);
-            localStorage.setItem('alGinaOrders', JSON.stringify(orders));
+            await addOrderToFirebase(newOrder);
             window.open(whatsappURL, '_blank');
-            
-            if (userType !== 'admin') {
-                alert('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.');
-            }
+            alert("تم إرسال طلبك بنجاح! سنتواصل معك قريباً.");
         }
 
         function sendOrderFromDetail() {
@@ -1001,44 +1041,174 @@
             }
         }
 
-        // ========== نظام تفاصيل المنتج ==========
-        function showProductDetail(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
+        async function updateOrderStatus(orderKey, newStatus) {
+            if (!currentUser || !currentUser.isAdmin) return;
+            await updateOrderStatusInFirebase(orderKey, newStatus);
+            alert("تم تحديث حالة الطلب");
+        }
+
+        async function deleteOrder(orderKey) {
+            if (!currentUser || !currentUser.isAdmin) return;
+            if (confirm("هل أنت متأكد من حذف هذا الطلب؟")) {
+                await deleteOrderFromFirebase(orderKey);
+            }
+        }
+
+        // ==================== Admin Product Management ====================
+        async function addNewProduct(event) {
+            event.preventDefault();
+            if (!currentUser || !currentUser.isAdmin) {
+                alert("هذه الميزة متاحة فقط للمسؤولين!");
+                return;
+            }
+            const name = document.getElementById('newProductName').value;
+            const category = document.getElementById('newProductCategory').value;
+            const sub = document.getElementById('newProductSub').value;
+            const img = document.getElementById('newProductImage').value;
             
-            currentProductDetail = product;
+            if (!name || !category || !sub || !img) {
+                alert("يرجى ملء جميع الحقول!");
+                return;
+            }
             
-            document.getElementById('detailProductName').textContent = product.name;
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            const newProduct = { id: newId, name, category, sub, img };
+            await addProductToFirebase(newProduct);
+            closeAddProductModal();
+            alert(`تم إضافة المنتج "${name}" بنجاح!`);
+        }
+
+        async function deleteProduct(productKey, productId) {
+            if (!currentUser || !currentUser.isAdmin) return;
+            if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+                await deleteProductFromFirebase(productKey);
+            }
+        }
+
+        // ==================== Authentication ====================
+        function showLoginForm(type) {
+            const clientForm = document.getElementById('clientLoginForm');
+            const adminForm = document.getElementById('adminLoginForm');
+            const clientBtn = document.getElementById('loginClientBtn');
+            const adminBtn = document.getElementById('loginAdminBtn');
             
-            const imageContainer = document.getElementById('detailProductImage');
-            imageContainer.innerHTML = `<img src="${product.img}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/600x400?text=صورة+غير+متوفرة'">`;
-            
-            const categoryMap = {
-                'bedroom': 'غرف النوم',
-                'sofas': 'الكنبات',
-                'electronics': 'إلكترونيات'
+            if (type === 'client') {
+                clientForm.style.display = 'block';
+                adminForm.style.display = 'none';
+                clientBtn.style.background = '#2d3748';
+                clientBtn.style.color = 'white';
+                clientBtn.style.border = '2px solid #c5a059';
+                adminBtn.style.background = '#1a1a1a';
+                adminBtn.style.color = '#c5a059';
+                adminBtn.style.border = '2px solid #444';
+            } else {
+                clientForm.style.display = 'none';
+                adminForm.style.display = 'block';
+                adminBtn.style.background = '#2d3748';
+                adminBtn.style.color = 'white';
+                adminBtn.style.border = '2px solid #c5a059';
+                clientBtn.style.background = '#1a1a1a';
+                clientBtn.style.color = '#c5a059';
+                clientBtn.style.border = '2px solid #444';
+            }
+        }
+
+        function clientLogin() {
+            const name = document.getElementById('clientName').value.trim();
+            if (!name) {
+                alert("الرجاء إدخال اسمك");
+                return;
+            }
+            currentUser = {
+                uid: 'client_' + Date.now(),
+                email: null,
+                isAdmin: false,
+                displayName: name
             };
+            updateUIAfterLogin();
+            closeLoginModal();
+        }
+
+        async function adminLogin() {
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            if (!email || !password) {
+                alert("الرجاء إدخال البريد الإلكتروني وكلمة المرور");
+                return;
+            }
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                currentUser = {
+                    uid: user.uid,
+                    email: user.email,
+                    isAdmin: true,
+                    displayName: user.email.split('@')[0]
+                };
+                updateUIAfterLogin();
+                closeLoginModal();
+            } catch (error) {
+                console.error(error);
+                alert("فشل تسجيل الدخول: " + (error.message === 'Firebase: Error (auth/invalid-credential).' ? 'بيانات غير صحيحة' : error.message));
+            }
+        }
+
+        function updateUIAfterLogin() {
+            const userDisplay = document.getElementById('userDisplay');
+            userDisplay.innerHTML = `${currentUser.isAdmin ? '👑 ' : '👤 '} ${currentUser.displayName}`;
+            userDisplay.style.color = currentUser.isAdmin ? '#c5a059' : '';
             
-            const subMap = {
-                'open': 'أبواب فتح',
-                'slide': 'أبواب سحاب',
-                'both': 'فتح وغلق'
-            };
-            
-            document.getElementById('detailProductInfo').innerHTML = `
-                <div><strong>الفئة:</strong> ${categoryMap[product.category] || product.category}</div>
-                <div><strong>النوع:</strong> ${subMap[product.sub] || product.sub}</div>
-                <div><strong>الرقم التسلسلي:</strong> ${product.id}</div>
-                <div style="margin-top: 15px; color: #c5a059; font-weight: bold;">
-                    <i class="fas fa-star"></i> ${getProductRating(product.id).toFixed(1)}/5
-                    <span style="color: #a0aec0; font-weight: normal; margin-right: 10px;">
-                        (${getReviewCount(product.id)} تقييم)
-                    </span>
-                </div>
-            `;
-            
-            displayProductReviews(product.id);
-            document.getElementById('productDetailModal').style.display = 'flex';
+            const adminActionsDiv = document.getElementById('adminActions');
+            if (currentUser.isAdmin) {
+                adminActionsDiv.style.display = 'flex';
+                adminActionsDiv.innerHTML = `
+                    <button class="admin-btn" onclick="showAddProductModal()"><i class="fas fa-plus"></i> إضافة منتج</button>
+                    <button class="admin-btn admin-btn-outline" onclick="showOrdersModal()"><i class="fas fa-shopping-cart"></i> الطلبات</button>
+                `;
+            } else {
+                adminActionsDiv.style.display = 'none';
+                adminActionsDiv.innerHTML = '';
+            }
+            renderProducts();
+        }
+
+        function logout() {
+            if (confirm("هل تريد تسجيل الخروج؟")) {
+                auth.signOut().catch(() => {});
+                currentUser = null;
+                document.getElementById('userDisplay').innerHTML = 'مرحباً';
+                document.getElementById('userDisplay').style.color = '';
+                document.getElementById('adminActions').innerHTML = '';
+                document.getElementById('loginModal').style.display = 'flex';
+                renderProducts();
+            }
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function showAddProductModal() {
+            if (!currentUser || !currentUser.isAdmin) {
+                alert("غير مصرح لك بهذه العملية");
+                return;
+            }
+            document.getElementById('addProductModal').style.display = 'flex';
+        }
+
+        function closeAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'none';
+            document.getElementById('addProductForm').reset();
+        }
+
+        function showOrdersModal() {
+            if (!currentUser || !currentUser.isAdmin) return;
+            document.getElementById('ordersModal').style.display = 'flex';
+            renderOrders();
+        }
+
+        function closeOrdersModal() {
+            document.getElementById('ordersModal').style.display = 'none';
         }
 
         function closeProductDetail() {
@@ -1046,165 +1216,73 @@
             currentProductDetail = null;
         }
 
-        // ========== نظام التقييمات ==========
-        function getProductRating(productId) {
-            if (!productReviews[productId] || productReviews[productId].length === 0) {
-                return 5.0;
-            }
+        // ==================== Filters ====================
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    const subFiltersDiv = document.getElementById('subFilters');
+                    subFiltersDiv.style.display = currentFilter === 'bedroom' ? 'block' : 'none';
+                    currentSubFilter = 'all';
+                    document.querySelectorAll('.sub-btn').forEach(sb => sb.classList.remove('active'));
+                    document.querySelector('.sub-btn[data-sub="all"]').classList.add('active');
+                    renderProducts();
+                });
+            });
             
-            const reviews = productReviews[productId];
-            const total = reviews.reduce((sum, review) => sum + review.rating, 0);
-            return total / reviews.length;
+            document.querySelectorAll('.sub-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSubFilter = btn.dataset.sub;
+                    renderProducts();
+                });
+            });
         }
 
-        function getReviewCount(productId) {
-            if (!productReviews[productId]) {
-                return 0;
-            }
-            return productReviews[productId].length;
+        function setupOrderFilters() {
+            document.querySelectorAll('.order-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.order-filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    renderOrders(btn.dataset.orderFilter);
+                });
+            });
         }
 
-        function displayProductReviews(productId) {
-            const container = document.getElementById('productReviews');
+        // ==================== Initialization ====================
+        async function init() {
+            setupFilters();
+            setupOrderFilters();
+            document.getElementById('addProductForm').addEventListener('submit', addNewProduct);
             
-            if (!productReviews[productId] || productReviews[productId].length === 0) {
-                container.innerHTML = `
-                    <div style="background: #2d3748; padding: 20px; border-radius: 10px;">
-                        <h4 style="color: #c5a059; margin-bottom: 15px;">التقييمات</h4>
-                        <div style="text-align: center; color: #a0aec0; padding: 20px;">
-                            لا توجد تقييمات بعد. كن أول من يقيم هذا المنتج!
-                        </div>
-                        <div style="text-align: center; margin-top: 15px;">
-                            <button onclick="addReview(${productId})" style="padding: 10px 20px; background: #c5a059; color: #1a202c; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                                <i class="fas fa-star"></i> أضف تقييمك
-                            </button>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
+            await loadProducts();
+            await loadOrders();
+            await loadReviews();
             
-            const reviews = productReviews[productId];
-            container.innerHTML = `
-                <div style="background: #2d3748; padding: 20px; border-radius: 10px;">
-                    <h4 style="color: #c5a059; margin-bottom: 15px;">التقييمات (${reviews.length})</h4>
-                    
-                    <div style="margin-bottom: 20px; color: #d69e2e; font-size: 18px;">
-                        ${'★'.repeat(Math.round(getProductRating(productId)))}${'☆'.repeat(5 - Math.round(getProductRating(productId)))}
-                        <span style="color: white; margin-right: 10px;">${getProductRating(productId).toFixed(1)}/5</span>
-                    </div>
-                    
-                    <div style="max-height: 300px; overflow-y: auto;">
-                        ${reviews.map((review, index) => `
-                            <div style="padding: 15px; border-bottom: 1px solid #4a5568; ${index === reviews.length - 1 ? 'border-bottom: none;' : ''}">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                    <strong style="color: #c5a059;">${review.reviewer}</strong>
-                                    <div style="color: #d69e2e;">
-                                        ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
-                                    </div>
-                                </div>
-                                <div>${review.comment}</div>
-                                <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">
-                                    ${review.date}
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                    
-                    <div style="text-align: center; margin-top: 20px;">
-                        <button onclick="addReview(${productId})" style="padding: 10px 20px; background: #2d3748; color: #c5a059; border: 1px solid #c5a059; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                            <i class="fas fa-plus"></i> أضف تقييمك
-                        </button>
-                    </div>
-                </div>
-            `;
+            // Check if user already logged in via Firebase
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    // التحقق مما إذا كان البريد هو حساب المسؤول (يمكنك تعديل هذا)
+                    const isAdmin = user.email === 'admin@algina.com';
+                    currentUser = {
+                        uid: user.uid,
+                        email: user.email,
+                        isAdmin: isAdmin,
+                        displayName: isAdmin ? 'المسؤول' : user.email.split('@')[0]
+                    };
+                    updateUIAfterLogin();
+                    closeLoginModal();
+                } else if (!currentUser) {
+                    // show login modal if no user
+                    document.getElementById('loginModal').style.display = 'flex';
+                }
+            });
         }
-
-        function addReview(productId) {
-            const userName = localStorage.getItem("alGinaUser") || "زائر";
-            
-            const rating = prompt(`تقيمك للمنتج (من 1 إلى 5 نجوم):\nأدخل رقم من 1 إلى 5`, "5");
-            
-            if (!rating) return;
-            
-            const ratingNum = parseInt(rating);
-            if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-                alert("الرجاء إدخال رقم بين 1 و 5");
-                return;
-            }
-            
-            const comment = prompt("أضف تعليقك (اختياري):", "منتج ممتاز!");
-            
-            if (!productReviews[productId]) {
-                productReviews[productId] = [];
-            }
-            
-            const newReview = {
-                reviewer: userName,
-                rating: ratingNum,
-                comment: comment || "لا يوجد تعليق",
-                date: new Date().toLocaleDateString('ar-SA')
-            };
-            
-            productReviews[productId].push(newReview);
-            localStorage.setItem('alGinaReviews', JSON.stringify(productReviews));
-            
-            if (currentProductDetail && currentProductDetail.id === productId) {
-                displayProductReviews(productId);
-            }
-            
-            alert("شكراً لتقييمك!");
-        }
-
-        // ========== تهيئة التطبيق ==========
-        function initializeApp() {
-            const userName = localStorage.getItem("alGinaUser");
-            
-            if (userName) {
-                document.getElementById("loginOverlay").style.display = "none";
-                updateUserDisplay();
-            } else {
-                selectUserType('client');
-            }
-            
-            loadProductsFromLocalStorage();
-            renderItems(products);
-        }
-
-        // بدء التشغيل
-        window.addEventListener('load', initializeApp);
+        
+        init();
     </script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-<script>
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyB1ulbptAmSmzfWL8VMadv62jOrltxRrbc",
-  authDomain: "al-gina-db.firebaseapp.com",
-  databaseURL: "https://al-gina-db-default-rtdb.firebaseio.com",
-  projectId: "al-gina-db",
-  storageBucket: "al-gina-db.firebasestorage.app",
-  messagingSenderId: "585470728532",
-  appId: "1:585470728532:web:18a0bc300a0a61d88490c1",
-  measurementId: "G-HCWRCEDSFB"
-};
-  // 3. هذه الأوامر تقوم بتشغيل الربط (انسخها كما هي)
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-
-  // هذه دالة بسيطة لكي نختبر هل الربط يعمل أم لا
-  function testFirebase() {
-    database.ref('test_logs').push({
-      message: "مبروك تم الربط بنجاح!",
-      time: new Date().toLocaleString()
-    });
-    alert("تحقق من صفحة Firebase الآن، ستجد البيانات ظهرت!");
-  }
-</script>
-
-<button onclick="testFirebase()" style="padding: 15px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
-   اضغط هنا لتجربة إرسال بيانات للقاعدة
-</button>
 </body>
 </html>
